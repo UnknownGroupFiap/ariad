@@ -1,0 +1,73 @@
+export const ROUTES = {
+  HOME: '/',
+  PLATAFORMA: '/plataforma',
+  SOBRE: '/sobre',
+  CONTATO: '/contato',
+  LOGIN: '/login',
+  CADASTRO: '/cadastro',
+  DASHBOARD: '/dashboard',
+  CASOS: '/casos',
+  NOVO_CASO: '/caso/novo',
+  CASO: (id: string) => `/caso/${id}`,
+  CONFIG_PESSOAL: '/configuracoes/perfil',
+  CONFIG_ORG: '/configuracoes/organizacao',
+}
+
+export const UFS = [
+  { value: 'AC', label: 'Acre' },
+  { value: 'AL', label: 'Alagoas' },
+  { value: 'AP', label: 'Amapá' },
+  { value: 'AM', label: 'Amazonas' },
+  { value: 'BA', label: 'Bahia' },
+  { value: 'CE', label: 'Ceará' },
+  { value: 'DF', label: 'Distrito Federal' },
+  { value: 'ES', label: 'Espírito Santo' },
+  { value: 'GO', label: 'Goiás' },
+  { value: 'MA', label: 'Maranhão' },
+  { value: 'MT', label: 'Mato Grosso' },
+  { value: 'MS', label: 'Mato Grosso do Sul' },
+  { value: 'MG', label: 'Minas Gerais' },
+  { value: 'PA', label: 'Pará' },
+  { value: 'PB', label: 'Paraíba' },
+  { value: 'PR', label: 'Paraná' },
+  { value: 'PE', label: 'Pernambuco' },
+  { value: 'PI', label: 'Piauí' },
+  { value: 'RJ', label: 'Rio de Janeiro' },
+  { value: 'RN', label: 'Rio Grande do Norte' },
+  { value: 'RS', label: 'Rio Grande do Sul' },
+  { value: 'RO', label: 'Rondônia' },
+  { value: 'RR', label: 'Roraima' },
+  { value: 'SC', label: 'Santa Catarina' },
+  { value: 'SP', label: 'São Paulo' },
+  { value: 'SE', label: 'Sergipe' },
+  { value: 'TO', label: 'Tocantins' },
+]
+
+export const STATUS_CASO = {
+  em_analise: {
+    label: 'Em investigação',
+    badge: 'default',
+    pastel: 'bg-ariad-green-water-light',
+    select: 'bg-ariad-green-water-light border-ariad-green-water',
+  },
+  aguardando_exames: {
+    label: 'Aguardando exames',
+    badge: 'warning',
+    pastel: 'bg-ariad-beige',
+    select: 'bg-ariad-beige border-ariad-beige-dark',
+  },
+  finalizado: {
+    label: 'Finalizado',
+    badge: 'success',
+    pastel: 'bg-ariad-green-water',
+    select: 'bg-ariad-green-water border-ariad-green-water',
+  },
+} as const
+
+export const ESPECIALIDADES = [
+  { value: 'neurologia', label: 'Neurologia' },
+  { value: 'cardiologia', label: 'Cardiologia' },
+  { value: 'pediatria', label: 'Pediatria' },
+  { value: 'genetica', label: 'Genética Médica' },
+  { value: 'clinica_geral', label: 'Clínica Geral' },
+]
