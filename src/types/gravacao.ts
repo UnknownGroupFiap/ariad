@@ -15,5 +15,4 @@ export type ResultadoTranscricao = {
   transcricao: string
   sintomasExtraidos: string[]
   evolucaoExtraida: string
-  sugestoesCid10: { codigo: string; descricao: string }[]
 }

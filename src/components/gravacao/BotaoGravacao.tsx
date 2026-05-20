@@ -368,28 +368,6 @@ export default function BotaoGravacao({
               onChange={(e) => setEvolucaoRevisao(e.target.value)}
             />
 
-            {/* CID-10 */}
-            {resultado.sugestoesCid10.length > 0 && (
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  CID-10 sugerido
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {resultado.sugestoesCid10.map((cid) => (
-                    <span
-                      key={cid.codigo}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-ariad-beige-light border border-ariad-beige"
-                    >
-                      <strong>{cid.codigo}</strong>
-                      <span className="text-ariad-blue-medium">
-                        — {cid.descricao}
-                      </span>
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Transcrição colapsável */}
             <div>
               <button

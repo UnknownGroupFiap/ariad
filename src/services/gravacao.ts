@@ -31,10 +31,6 @@ const PADROES: PadraoTranscricao[] = [
         'finas (abotoar camisas), rigidez matinal em membros superiores, lentidão da marcha ' +
         'com postura fletida e micrografia. Refere distúrbio comportamental do sono REM. ' +
         'Sem quedas até o momento. Sem alteração cognitiva aparente.',
-      sugestoesCid10: [
-        { codigo: 'G20', descricao: 'Doença de Parkinson' },
-        { codigo: 'G25.0', descricao: 'Tremor essencial' },
-      ],
     },
   },
   {
@@ -61,10 +57,6 @@ const PADROES: PadraoTranscricao[] = [
         'evoluindo para fraqueza proximal e distal em membros inferiores, e agora acometendo ' +
         'membros superiores. Arreflexia bilateral em patelares e aquileus. Dor neuropática ' +
         'lombar e em membros inferiores. Necessita de apoio para deambulação.',
-      sugestoesCid10: [
-        { codigo: 'G61.0', descricao: 'Síndrome de Guillain-Barré' },
-        { codigo: 'G62.9', descricao: 'Polineuropatia não especificada' },
-      ],
     },
   },
   {
@@ -91,9 +83,6 @@ const PADROES: PadraoTranscricao[] = [
         'confirmados por lâmpada de fenda. Ceruloplasmina sérica: 8 mg/dL (baixa). Cobre ' +
         'urinário 24h elevado. Alteração comportamental relatada pela mãe. Quadro compatível ' +
         'com doença de Wilson.',
-      sugestoesCid10: [
-        { codigo: 'E83.0', descricao: 'Doença de Wilson' },
-      ],
     },
   },
   {
@@ -117,9 +106,6 @@ const PADROES: PadraoTranscricao[] = [
         'associadas a úlceras genitais de repetição (2 episódios). Episódio de uveíte anterior ' +
         'diagnosticada por oftalmologista. Lesões cutâneas papulopustulosas em membros. ' +
         'Sem histórico familiar. Quadro clínico sugere investigação para doença de Behçet.',
-      sugestoesCid10: [
-        { codigo: 'M35.2', descricao: 'Doença de Behçet' },
-      ],
     },
   },
 ]
@@ -141,10 +127,6 @@ const FALLBACK: ResultadoTranscricao = {
     'Paciente com queixa de fadiga persistente há semanas, acompanhada de artralgias difusas, ' +
     'distúrbio do sono e redução do apetite. Histórico familiar de hipertensão materna e ' +
     'diabetes paterno. Necessário investigação complementar com exames laboratoriais gerais.',
-  sugestoesCid10: [
-    { codigo: 'R53', descricao: 'Mal-estar e fadiga' },
-    { codigo: 'R69', descricao: 'Causas desconhecidas e não especificadas de morbidade' },
-  ],
 }
 
 function pontuar(texto: string, termos: string[]): number {
@@ -176,11 +158,10 @@ const ETAPAS_TEMPLATE: Omit<EtapaProcessamento, 'status'>[] = [
   { id: 'audio', label: 'Processando áudio...' },
   { id: 'transcricao', label: 'Transcrevendo fala...' },
   { id: 'sintomas', label: 'Extraindo sintomas...' },
-  { id: 'cid10', label: 'Identificando CID-10...' },
   { id: 'evolucao', label: 'Gerando evolução clínica...' },
 ]
 
-const DELAYS = [1500, 2000, 1500, 1000, 1000]
+const DELAYS = [1500, 2000, 1500, 1000]
 
 export function simularProcessamento(
   onEtapa: (etapas: EtapaProcessamento[]) => void,
