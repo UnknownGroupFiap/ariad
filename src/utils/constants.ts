@@ -11,6 +11,7 @@ export const ROUTES = {
   CASO: (id: string) => `/caso/${id}`,
   CONFIG_PESSOAL: '/configuracoes/perfil',
   CONFIG_ORG: '/configuracoes/organizacao',
+  CONFIG_INTEGRACOES: '/configuracoes/integracoes',
 }
 
 export const UFS = [
