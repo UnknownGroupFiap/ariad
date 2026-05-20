@@ -16,6 +16,7 @@ import NovoCaso from '@/pages/private/NovoCaso/NovoCaso'
 import Caso from '@/pages/private/Caso/Caso'
 import ConfigPessoal from '@/pages/private/Configuracoes/Pessoais'
 import ConfigOrganizacao from '@/pages/private/Configuracoes/Organizacao'
+import Integracoes from '@/pages/private/Configuracoes/Integracoes'
 
 function App() {
   return (
@@ -75,6 +76,14 @@ function App() {
             element={
               <PrivateRoute>
                 <ConfigOrganizacao />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path={ROUTES.CONFIG_INTEGRACOES}
+            element={
+              <PrivateRoute>
+                <Integracoes />
               </PrivateRoute>
             }
           />

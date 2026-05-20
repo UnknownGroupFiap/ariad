@@ -187,6 +187,25 @@ export function adicionarConsulta(
   return atualizado
 }
 
+export function salvarTranscricao(
+  medicoId: string,
+  casoId: string,
+  consultaId: string,
+  transcricao: string,
+): Caso {
+  const todos = garantirSeed(medicoId)
+  const idx = todos.findIndex((c) => c.id === casoId && c.medicoId === medicoId)
+  if (idx === -1) throw new Error('Caso não encontrado.')
+
+  const caso = todos[idx]
+  const consultas = caso.consultas.map((c) =>
+    c.id === consultaId ? { ...c, transcricao } : c,
+  )
+  todos[idx] = { ...caso, consultas, atualizadoEm: new Date() }
+  gravarTodos(todos)
+  return todos[idx]
+}
+
 export function atualizarCaso(
   medicoId: string,
   casoId: string,

@@ -8,8 +8,13 @@ import {
   Textarea,
   Button,
 } from '@/components'
+import BotaoGravacao from '@/components/gravacao/BotaoGravacao'
 import { useAuth } from '@/contexts/AuthContext'
 import { criarCaso, obterCasoPorCpf, adicionarConsulta } from '@/services/casos'
+import {
+  buscarPacientePorCpf,
+  temIntegracaoAtiva,
+} from '@/services/integracoes'
 import { CASOS_TEMPLATES } from '@/utils/mockData'
 import { ROUTES, ESPECIALIDADES } from '@/utils/constants'
 import type { Caso } from '@/types'
@@ -47,6 +52,7 @@ export default function NovoCaso() {
   const [sintomas, setSintomas] = useState<string[]>([])
   const [sintomaAtual, setSintomaAtual] = useState('')
   const [erro, setErro] = useState('')
+  const [dadosImportados, setDadosImportados] = useState(false)
 
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -63,6 +69,25 @@ export default function NovoCaso() {
       pacienteCpf: cpf,
       primeiraConsulta: !cpfJaRegistrado(cpf),
     }))
+    setDadosImportados(false)
+
+    // Auto-fill via integração com prontuário
+    if (temIntegracaoAtiva()) {
+      const paciente = buscarPacientePorCpf(cpf)
+      if (paciente) {
+        setForm((f) => ({
+          ...f,
+          pacienteCpf: cpf,
+          pacienteNome: paciente.nome,
+          pacienteIdade: paciente.idade,
+          pacienteSexo: paciente.sexo,
+          pacienteRegiao: paciente.regiao,
+          historicoFamiliar: paciente.historicoFamiliar,
+          primeiraConsulta: !cpfJaRegistrado(cpf),
+        }))
+        setDadosImportados(true)
+      }
+    }
   }
 
   const adicionarSintoma = () => {
@@ -226,6 +251,19 @@ export default function NovoCaso() {
                   )}
                 </div>
               </div>
+              {dadosImportados && (
+                <div className="bg-ariad-green-water-light rounded-lg p-3 flex gap-2 text-sm">
+                  <i
+                    className="bi bi-plug text-ariad-green-water"
+                    aria-hidden="true"
+                  />
+                  <span>
+                    <strong>Dados importados do prontuário eletrônico.</strong>{' '}
+                    Verifique e ajuste se necessário.
+                  </span>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
                   label="Idade"
@@ -266,6 +304,27 @@ export default function NovoCaso() {
           <Card>
             <h2 className="text-xl  mb-4">Dados Clínicos</h2>
             <div className="space-y-4">
+              <div className="bg-ariad-beige-light rounded-lg p-3 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <i
+                    className="bi bi-mic-fill text-ariad-green-water"
+                    aria-hidden="true"
+                  />
+                  <span>
+                    Grave a consulta para preencher sintomas e evolução
+                    automaticamente.
+                  </span>
+                </div>
+                <BotaoGravacao
+                  sintomas={sintomas.join(', ')}
+                  evolucao={form.evolucao}
+                  onSalvar={(dados) => {
+                    setSintomas(dados.sintomas)
+                    set('evolucao', dados.evolucao)
+                  }}
+                />
+              </div>
+
               <div>
                 <label
                   htmlFor="sintoma"

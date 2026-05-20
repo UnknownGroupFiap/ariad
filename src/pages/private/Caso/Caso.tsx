@@ -1,8 +1,14 @@
 import { useState, useRef, type FormEvent } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { PrivateLayout, Card, Button, Textarea } from '@/components'
+import BotaoGravacao from '@/components/gravacao/BotaoGravacao'
 import { useAuth } from '@/contexts/AuthContext'
-import { obterCaso, atualizarCaso, adicionarConsulta } from '@/services/casos'
+import {
+  obterCaso,
+  atualizarCaso,
+  adicionarConsulta,
+  salvarTranscricao,
+} from '@/services/casos'
 import { ROUTES, STATUS_CASO, ESPECIALIDADES } from '@/utils/constants'
 import type { Caso as CasoType } from '@/types'
 
@@ -143,7 +149,28 @@ export default function Caso() {
                 ))}
               </select>
             </label>
-            <div className="ml-auto">
+            <div className="ml-auto flex items-center gap-2">
+              <BotaoGravacao
+                sintomas={ultimaConsulta.sintomas}
+                evolucao={ultimaConsulta.evolucao}
+                onSalvar={(dados) => {
+                  const atualizado = adicionarConsulta(user.id, caso.id, {
+                    sintomas: dados.sintomas.join(', '),
+                    evolucao: dados.evolucao,
+                    primeiraConsulta: false,
+                    data: new Date(),
+                  })
+                  const novaConsultaObj =
+                    atualizado.consultas[atualizado.consultas.length - 1]
+                  const comTranscricao = salvarTranscricao(
+                    user.id,
+                    caso.id,
+                    novaConsultaObj.id,
+                    dados.transcricao,
+                  )
+                  setCaso(comTranscricao)
+                }}
+              />
               <Button
                 variant="secondary"
                 size="sm"
@@ -227,6 +254,21 @@ export default function Caso() {
             </p>
           </Card>
         </div>
+
+        {ultimaConsulta.transcricao && (
+          <Card>
+            <h2 className="flex items-center gap-2 text-lg  mb-3">
+              <i
+                className="bi bi-mic text-ariad-green-water"
+                aria-hidden="true"
+              />
+              Transcrição da consulta
+            </h2>
+            <p className="text-sm  whitespace-pre-wrap">
+              {ultimaConsulta.transcricao}
+            </p>
+          </Card>
+        )}
 
         <Card>
           <h2 className="flex items-center gap-2 text-lg  mb-3">

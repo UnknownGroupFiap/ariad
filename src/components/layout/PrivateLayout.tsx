@@ -113,6 +113,14 @@ export default function PrivateLayout({ children }: PrivateLayoutProps) {
                         <i className="bi bi-building" aria-hidden="true" />
                         Configurações organizacionais
                       </Link>
+                      <Link
+                        to={ROUTES.CONFIG_INTEGRACOES}
+                        onClick={() => setMenuUsuario(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm  hover:bg-ariad-green-water-light"
+                      >
+                        <i className="bi bi-plug" aria-hidden="true" />
+                        Integrações
+                      </Link>
                       <button
                         onClick={handleLogout}
                         className="flex items-center gap-3 px-4 py-2.5 text-sm  hover:bg-ariad-green-water-light w-full text-left"
