@@ -1,0 +1,29 @@
+src/pages/public/SobreProjeto/SobreProjeto.tsx
+  s_08c1085e4e7133::t_a3dc2c99874b6f 106
+  s_08c1085e4e7133::t_b8208838ee45d8 1-105,108-141
+  s_08c1085e4e7133::t_ef6cc270c8e33c 107
+src/App.tsx
+  s_08c1085e4e7133::t_b8208838ee45d8 9,31
+src/components/layout/Footer.tsx
+  s_08c1085e4e7133::t_b8208838ee45d8 8
+src/components/layout/Header.tsx
+  s_08c1085e4e7133::t_b8208838ee45d8 11
+src/utils/constants.ts
+  s_08c1085e4e7133::t_b8208838ee45d8 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.0",
+  "base_commit_sha": "51f4f45f389e8c2e5f469ac379bc4127a7e7d56d",
+  "prompts": {},
+  "sessions": {
+    "s_08c1085e4e7133": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019e5aea-4526-7af1-a72f-c6a1eaf45070",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Thales Mendes <thalesmendes.dev@gmail.com>"
+    }
+  }
+}
