@@ -5,6 +5,7 @@ import logo from '@/assets/logo.svg'
 const navLinks = [
   { to: ROUTES.HOME, label: 'Início' },
   { to: ROUTES.PLATAFORMA, label: 'A plataforma' },
+  { to: ROUTES.SOBRE_PROJETO, label: 'Sobre o projeto' },
   { to: ROUTES.SOBRE, label: 'Sobre nós' },
   { to: ROUTES.CONTATO, label: 'Contato' },
 ]

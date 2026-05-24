@@ -6,6 +6,7 @@ import { ROUTES } from '@/utils/constants'
 import Inicio from '@/pages/public/Inicio/Inicio'
 import Plataforma from '@/pages/public/Plataforma/Plataforma'
 import Sobre from '@/pages/public/Sobre/Sobre'
+import SobreProjeto from '@/pages/public/SobreProjeto/SobreProjeto'
 import Contato from '@/pages/public/Contato/Contato'
 import Login from '@/pages/public/Login/Login'
 import Cadastro from '@/pages/public/Cadastro/Cadastro'
@@ -27,6 +28,7 @@ function App() {
           <Route path={ROUTES.HOME} element={<Inicio />} />
           <Route path={ROUTES.PLATAFORMA} element={<Plataforma />} />
           <Route path={ROUTES.SOBRE} element={<Sobre />} />
+          <Route path={ROUTES.SOBRE_PROJETO} element={<SobreProjeto />} />
           <Route path={ROUTES.CONTATO} element={<Contato />} />
           <Route path={ROUTES.LOGIN} element={<Login />} />
           <Route path={ROUTES.CADASTRO} element={<Cadastro />} />

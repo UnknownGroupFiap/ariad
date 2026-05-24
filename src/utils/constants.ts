@@ -2,6 +2,7 @@ export const ROUTES = {
   HOME: '/',
   PLATAFORMA: '/plataforma',
   SOBRE: '/sobre',
+  SOBRE_PROJETO: '/sobre-projeto',
   CONTATO: '/contato',
   LOGIN: '/login',
   CADASTRO: '/cadastro',
