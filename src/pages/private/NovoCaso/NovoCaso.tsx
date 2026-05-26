@@ -409,18 +409,6 @@ export default function NovoCaso() {
             </div>
           </Card>
 
-          <Card>
-            <h2 className="text-xl  mb-4">Exames e Documentos</h2>
-            <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-ariad-beige-dark rounded-lg py-10 cursor-pointer hover:border-ariad-green-water transition-colors">
-              <i className="bi bi-upload text-2xl " aria-hidden="true" />
-              <span>Clique para fazer upload</span>
-              <span className="text-xs ">
-                PDF, imagens de exames, laudos médicos
-              </span>
-              <input type="file" multiple className="sr-only" />
-            </label>
-          </Card>
-
           {erro && <p className="text-red-500 text-sm">{erro}</p>}
 
           <div className="flex gap-3">

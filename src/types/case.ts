@@ -24,7 +24,6 @@ export type Consulta = {
   sintomas: string
   evolucao: string
   status?: Caso['status']
-  examemAnexo?: string
   transcricao?: string
 }
 

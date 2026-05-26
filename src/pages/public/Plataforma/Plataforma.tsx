@@ -50,9 +50,9 @@ const diferenciais = [
   },
   {
     icone: 'bi-file-earmark-medical-fill',
-    titulo: 'Análise de documentos',
+    titulo: 'Integrado ao seu fluxo',
     texto:
-      'Aceita exames e laudos para hipóteses mais consistentes com o caso concreto.',
+      'Compatível com os principais sistemas de prontuário eletrônico usados no Brasil, sem precisar sair da ferramenta que você já usa.',
   },
   {
     icone: 'bi-geo-alt-fill',
