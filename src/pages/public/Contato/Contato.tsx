@@ -1,5 +1,13 @@
 import { useState, type FormEvent } from 'react'
-import { PublicLayout, Input, Select, Textarea, Button, Card, SectionHeading,} from '@/components'
+import {
+  PublicLayout,
+  Input,
+  Select,
+  Textarea,
+  Button,
+  Card,
+  SectionHeading,
+} from '@/components'
 import { validateEmail } from '@/utils/validators'
 
 const MAX_CHARS_MENSAGEM = 500
@@ -99,9 +107,7 @@ export default function Contato() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
-              <h2 className="text-2xl mb-6">
-                Nossos canais
-              </h2>
+              <h2 className="text-2xl mb-6">Nossos canais</h2>
               <div className="space-y-4">
                 {canais.map((c) => (
                   <Card key={c.titulo} className="flex items-start gap-4">
@@ -112,9 +118,7 @@ export default function Contato() {
                       />
                     </span>
                     <div>
-                      <div className="font-semibold">
-                        {c.titulo}
-                      </div>
+                      <div className="font-semibold">{c.titulo}</div>
                       {c.linhas.map((l) => (
                         <div key={l} className="text-sm">
                           {l}
@@ -127,9 +131,7 @@ export default function Contato() {
             </div>
 
             <div>
-              <h2 className="text-2xl mb-6">
-                Envie uma mensagem
-              </h2>
+              <h2 className="text-2xl mb-6">Envie uma mensagem</h2>
               <Card>
                 {enviado ? (
                   <div className="text-center py-8">
@@ -137,9 +139,7 @@ export default function Contato() {
                       className="bi bi-check-circle text-4xl text-ariad-green-water"
                       aria-hidden="true"
                     />
-                    <h3 className="text-2xl mt-4 mb-2">
-                      Mensagem recebida
-                    </h3>
+                    <h3 className="text-2xl mt-4 mb-2">Mensagem recebida</h3>
                     <p>
                       Obrigado, {form.nome.split(' ')[0]}. Retornaremos pelo
                       email informado.
@@ -197,14 +197,15 @@ export default function Contato() {
           </div>
 
           <div className="mt-20">
-            <h2 className="text-3xl md:text-4xl mb-8">
-              Dúvidas frequentes
-            </h2>
+            <h2 className="text-3xl md:text-4xl mb-8">Dúvidas frequentes</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {faq.map((item) => (
                 <Card key={item.pergunta}>
                   <h3 className="text-lg flex items-start gap-2 font-semibold text-ariad-green-water mb-2">
-                    <i className="bi bi-question-circle-fill" aria-hidden="true" />
+                    <i
+                      className="bi bi-question-circle-fill"
+                      aria-hidden="true"
+                    />
                     {item.pergunta}
                   </h3>
                   <p>{item.resposta}</p>

@@ -40,9 +40,7 @@ export default function Casos() {
       <div className="max-w-7xl mx-auto">
         <header className="mb-8">
           <h1 className="text-3xl ">Casos Clínicos</h1>
-          <p>
-            Gerencie e acompanhe todos os casos em investigação
-          </p>
+          <p>Gerencie e acompanhe todos os casos em investigação</p>
         </header>
 
         <div className="bg-white rounded-lg shadow-sm p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
