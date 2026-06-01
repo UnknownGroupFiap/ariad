@@ -21,7 +21,8 @@ const principios = [
   {
     icone: 'bi-diagram-3',
     titulo: 'Feito para a rotina real',
-    texto: 'Integrado ao fluxo da consulta sem gerar sobrecarga e sem abrir mão do rigor clínico.',
+    texto:
+      'Integrado ao fluxo da consulta sem gerar sobrecarga e sem abrir mão do rigor clínico.',
   },
   {
     icone: 'bi-clipboard2-check',
@@ -35,23 +36,19 @@ export default function Sobre() {
   return (
     <PublicLayout>
       <HeroSection>
-        <SectionHeading
-          eyebrow="Sobre nós"
-          as="h1"
-          className="max-w-4xl mb-8"
-        >
+        <SectionHeading eyebrow="Sobre nós" as="h1" className="max-w-4xl mb-8">
           Por que o diagnóstico correto de uma doença rara demora tanto?
         </SectionHeading>
         <div className="border-l-4 border-ariad-green-water pl-6 space-y-4 max-w-3xl text-lg">
           <p>
-            O Ariad nasceu dessa pergunta. Não como uma resposta fácil,
-            mas como uma tentativa séria de reduzir o tempo entre o
-            primeiro sintoma e o diagnóstico correto.
+            O Ariad nasceu dessa pergunta. Não como uma resposta fácil, mas como
+            uma tentativa séria de reduzir o tempo entre o primeiro sintoma e o
+            diagnóstico correto.
           </p>
           <p>
             São mais de 7.000 doenças raras catalogadas, com apresentações
-            clínicas que se confundem com condições muito mais comuns.
-            Levantar a suspeita certa, no momento certo, é o passo que muda tudo.
+            clínicas que se confundem com condições muito mais comuns. Levantar
+            a suspeita certa, no momento certo, é o passo que muda tudo.
           </p>
         </div>
       </HeroSection>
@@ -62,12 +59,13 @@ export default function Sobre() {
             eyebrow="O que nos move"
             className="text-white mb-6 max-w-3xl"
           >
-            Reduzir o tempo entre o primeiro sintoma e o diagnóstico correto em doenças raras
+            Reduzir o tempo entre o primeiro sintoma e o diagnóstico correto em
+            doenças raras
           </SectionHeading>
           <p className="text-lg text-ariad-muted leading-relaxed max-w-3xl">
-            Não para substituir o médico ou  automatizar a medicina, mas para dar ao médico
-            um apoio que hoje não existe, e que pode fazer diferença no momento em que o caso
-            ainda não tem nome
+            Não para substituir o médico ou automatizar a medicina, mas para dar
+            ao médico um apoio que hoje não existe, e que pode fazer diferença
+            no momento em que o caso ainda não tem nome
           </p>
         </div>
       </section>

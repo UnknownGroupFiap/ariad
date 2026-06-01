@@ -32,12 +32,8 @@ export default function Login() {
     <PublicLayout>
       <section className="py-20 px-4 flex justify-center">
         <div className="w-full max-w-md">
-          <h1 className="text-3xl mb-2 text-center">
-            Entrar no Ariad
-          </h1>
-          <p className="text-center mb-8">
-            Acesse seu painel clínico.
-          </p>
+          <h1 className="text-3xl mb-2 text-center">Entrar no Ariad</h1>
+          <p className="text-center mb-8">Acesse seu painel clínico.</p>
 
           <Card>
             <form onSubmit={handleSubmit} className="space-y-4">

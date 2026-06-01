@@ -87,7 +87,10 @@ export default function PrivateLayout({ children }: PrivateLayoutProps) {
                       CRM {user?.crm}/{user?.uf}
                     </span>
                   </span>
-                  <i className="bi bi-chevron-down font-medium" aria-hidden="true" />
+                  <i
+                    className="bi bi-chevron-down font-medium"
+                    aria-hidden="true"
+                  />
                 </button>
 
                 {menuUsuario && (
@@ -125,10 +128,7 @@ export default function PrivateLayout({ children }: PrivateLayoutProps) {
                         onClick={handleLogout}
                         className="flex items-center gap-3 px-4 py-2.5 text-sm  hover:bg-ariad-green-water-light w-full text-left"
                       >
-                        <i
-                          className="bi bi-x-lg"
-                          aria-hidden="true"
-                        />
+                        <i className="bi bi-x-lg" aria-hidden="true" />
                         Sair
                       </button>
                     </div>

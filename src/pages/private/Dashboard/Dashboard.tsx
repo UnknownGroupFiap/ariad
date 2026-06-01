@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, Legend } from 'recharts'
 import { PrivateLayout, Card } from '@/components'
 import { useAuth } from '@/contexts/AuthContext'
@@ -30,7 +31,11 @@ const CORES_STATUS: Record<Caso['status'], string> = {
 
 export default function Dashboard() {
   const { user } = useAuth()
-  const [casos] = useState<Caso[]>(() => (user ? listarCasos(user.id) : []))
+  const { data: casos = [] } = useQuery({
+    queryKey: ['casos', user?.id],
+    queryFn: () => listarCasos(user!.id),
+    enabled: !!user,
+  })
 
   const acoes = [
     {

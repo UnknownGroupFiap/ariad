@@ -139,10 +139,7 @@ export default function Plataforma() {
 
       <section className="py-20 px-4 sm:px-6 bg-ariad-beige-light">
         <div className="max-w-6xl mx-auto">
-          <SectionHeading
-            eyebrow="Diferenciais"
-            className="mb-12"
-          >
+          <SectionHeading eyebrow="Diferenciais" className="mb-12">
             O que sustenta a confiança clínica.
           </SectionHeading>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

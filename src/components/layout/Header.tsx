@@ -41,9 +41,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           <Link to={ROUTES.HOME} className="flex items-center gap-2">
             <img src={logo} alt="Ariad" className="w-8 h-8" />
-            <span className="text-lg font-semibold">
-              Ariad
-            </span>
+            <span className="text-lg font-semibold">Ariad</span>
           </Link>
 
           <div className="flex items-center gap-8">

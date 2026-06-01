@@ -29,7 +29,6 @@ function gravarUsuarios(users: StoredUser[]): void {
 
 function semSenha(u: StoredUser): User {
   const { senha: _senha, ...user } = u
-  void _senha
   return user
 }
 
