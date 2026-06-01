@@ -11,7 +11,7 @@ import {
   salvarTranscricao,
 } from '@/services/casos'
 import { ROUTES, STATUS_CASO, ESPECIALIDADES } from '@/utils/constants'
-import type { Caso as CasoType } from '@/types'
+import type { Caso as CasoType } from '@shared/types'
 
 function formatarData(d: Date): string {
   return d.toLocaleDateString('pt-BR')

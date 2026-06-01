@@ -40,7 +40,6 @@ export default async function handler(request: Request): Promise<Response> {
 
   const { hipoteses, investigacoes } = gerarDiagnostico(body.sintomas, body.evolucao)
   const p = body.paciente ?? {}
-  const consultaId = `consulta-${Date.now()}`
 
   try {
     const casoRows = await sql`
@@ -75,9 +74,9 @@ export default async function handler(request: Request): Promise<Response> {
     }
 
     await sql`
-      INSERT INTO consultas (id, caso_id, data, primeira_consulta, sintomas, evolucao, status)
+      INSERT INTO consultas (caso_id, data, primeira_consulta, sintomas, evolucao, status)
       VALUES (
-        ${consultaId}, ${casoId}, ${body.data}::timestamptz,
+        ${casoId}, ${body.data}::timestamptz,
         ${body.primeiraConsulta}, ${body.sintomas}, ${body.evolucao},
         ${casoRows[0].status}
       )

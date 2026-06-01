@@ -6,7 +6,7 @@ import type {
   EstadoGravacao,
   EtapaProcessamento,
   ResultadoTranscricao,
-} from '@/types'
+} from '@shared/types'
 
 type BotaoGravacaoProps = {
   sintomas: string

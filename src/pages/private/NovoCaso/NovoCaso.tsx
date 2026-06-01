@@ -8,7 +8,7 @@ import { criarCaso, adicionarConsulta, listarCasos, type ConsultaInput, type Nov
 import { buscarPacientePorCpf, temIntegracaoAtiva } from '@/services/integracoes'
 import { CASOS_TEMPLATES } from '@/utils/mockData'
 import { ROUTES, ESPECIALIDADES } from '@/utils/constants'
-import type { Caso } from '@/types'
+import type { Caso } from '@shared/types'
 
 const hojeISO = () => new Date().toISOString().slice(0, 10)
 

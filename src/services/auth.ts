@@ -1,4 +1,4 @@
-import type { User } from '@/types'
+import type { User } from '@shared/types'
 
 const USERS_KEY = 'ariad:users'
 const SESSION_KEY = 'ariad:session'

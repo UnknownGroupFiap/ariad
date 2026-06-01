@@ -1,16 +1,4 @@
-type Investigacao = {
-  id: string
-  tipo: 'pergunta' | 'exame'
-  descricao: string
-}
-
-type Hipotese = {
-  id: string
-  nome: string
-  probabilidade: number
-  evidencias: string[]
-  investigacoes?: Investigacao[]
-}
+import type { Hipotese, Investigacao } from '@shared/types'
 
 type Padrao = {
   termos: string[]

@@ -1,4 +1,4 @@
-import type { Caso, Consulta } from '@/types'
+import type { Caso, Consulta } from '@shared/types'
 
 type CasoSerializado = Omit<Caso, 'criadoEm' | 'atualizadoEm' | 'consultas'> & {
   criadoEm: string
