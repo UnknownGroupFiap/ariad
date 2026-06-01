@@ -1,5 +1,6 @@
 import { useState, useRef, type FormEvent } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { PrivateLayout, Card, Button, Textarea } from '@/components'
 import BotaoGravacao from '@/components/gravacao/BotaoGravacao'
 import { useAuth } from '@/contexts/AuthContext'
@@ -28,10 +29,46 @@ const especialidadeLabel = (valor: string) =>
 export default function Caso() {
   const { id = '' } = useParams()
   const { user } = useAuth()
+  const queryClient = useQueryClient()
 
-  const [caso, setCaso] = useState<CasoType | undefined>(() =>
-    user ? obterCaso(user.id, id) : undefined,
-  )
+  const {
+    data: caso,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['caso', user?.id, id],
+    queryFn: () => obterCaso(user!.id, id),
+    enabled: !!user && !!id,
+  })
+
+  const setCasoCache = (atualizado: CasoType) => {
+    queryClient.setQueryData(['caso', user!.id, id], atualizado)
+    queryClient.invalidateQueries({ queryKey: ['casos', user!.id] })
+  }
+
+  const statusMutation = useMutation({
+    mutationFn: (status: CasoType['status']) =>
+      atualizarCaso(user!.id, id, { status }),
+    onSuccess: setCasoCache,
+  })
+
+  const consultaMutation = useMutation({
+    mutationFn: (vars: { sintomas: string; evolucao: string }) =>
+      adicionarConsulta(user!.id, id, {
+        sintomas: vars.sintomas,
+        evolucao: vars.evolucao,
+        primeiraConsulta: false,
+        data: new Date(),
+      }),
+    onSuccess: setCasoCache,
+  })
+
+  const transcricaoMutation = useMutation({
+    mutationFn: (vars: { consultaId: string; transcricao: string }) =>
+      salvarTranscricao(user!.id, id, vars.consultaId, vars.transcricao),
+    onSuccess: setCasoCache,
+  })
+
   const [consultaAberta, setConsultaAberta] = useState<string | null>(null)
   const [novaConsulta, setNovaConsulta] = useState({
     sintomas: '',
@@ -41,7 +78,17 @@ export default function Caso() {
   const [toast, setToast] = useState('')
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  if (!user || !caso) {
+  if (isLoading) {
+    return (
+      <PrivateLayout>
+        <div className="max-w-2xl mx-auto text-center py-20">
+          <p>Carregando caso...</p>
+        </div>
+      </PrivateLayout>
+    )
+  }
+
+  if (!user || !caso || isError) {
     return (
       <PrivateLayout>
         <div className="max-w-2xl mx-auto text-center py-20">
@@ -64,20 +111,40 @@ export default function Caso() {
   const exames = investigacoes.filter((i) => i.tipo === 'exame')
 
   const handleStatus = (status: CasoType['status']) =>
-    setCaso(atualizarCaso(user.id, caso.id, { status }))
+    statusMutation.mutate(status)
 
   const handleNovaConsulta = (e: FormEvent) => {
     e.preventDefault()
     if (!novaConsulta.sintomas.trim()) return
-    const atualizado = adicionarConsulta(user.id, caso.id, {
-      sintomas: novaConsulta.sintomas,
-      evolucao: novaConsulta.evolucao,
-      primeiraConsulta: false,
-      data: new Date(),
+    consultaMutation.mutate(
+      {
+        sintomas: novaConsulta.sintomas,
+        evolucao: novaConsulta.evolucao,
+      },
+      {
+        onSuccess: () => {
+          setNovaConsulta({ sintomas: '', evolucao: '' })
+          setFormAberto(false)
+        },
+      },
+    )
+  }
+
+  const handleGravacao = async (dados: {
+    sintomas: string[]
+    evolucao: string
+    transcricao: string
+  }) => {
+    const atualizado = await consultaMutation.mutateAsync({
+      sintomas: dados.sintomas.join(', '),
+      evolucao: dados.evolucao,
     })
-    setCaso(atualizado)
-    setNovaConsulta({ sintomas: '', evolucao: '' })
-    setFormAberto(false)
+    const novaConsultaObj =
+      atualizado.consultas[atualizado.consultas.length - 1]
+    await transcricaoMutation.mutateAsync({
+      consultaId: novaConsultaObj.id,
+      transcricao: dados.transcricao,
+    })
   }
 
   const compartilhar = () => {
@@ -138,6 +205,7 @@ export default function Caso() {
                 onChange={(e) =>
                   handleStatus(e.target.value as CasoType['status'])
                 }
+                disabled={statusMutation.isPending}
                 className={`block mt-1 px-3 py-1.5 rounded-lg text-sm border ${
                   STATUS_CASO[caso.status].select
                 }`}
@@ -153,23 +221,7 @@ export default function Caso() {
               <BotaoGravacao
                 sintomas={ultimaConsulta.sintomas}
                 evolucao={ultimaConsulta.evolucao}
-                onSalvar={(dados) => {
-                  const atualizado = adicionarConsulta(user.id, caso.id, {
-                    sintomas: dados.sintomas.join(', '),
-                    evolucao: dados.evolucao,
-                    primeiraConsulta: false,
-                    data: new Date(),
-                  })
-                  const novaConsultaObj =
-                    atualizado.consultas[atualizado.consultas.length - 1]
-                  const comTranscricao = salvarTranscricao(
-                    user.id,
-                    caso.id,
-                    novaConsultaObj.id,
-                    dados.transcricao,
-                  )
-                  setCaso(comTranscricao)
-                }}
+                onSalvar={handleGravacao}
               />
               <Button
                 variant="secondary"
@@ -208,8 +260,15 @@ export default function Caso() {
                   }))
                 }
               />
-              <Button type="submit" variant="secondary" size="sm">
-                Registrar e reavaliar hipóteses
+              <Button
+                type="submit"
+                variant="secondary"
+                size="sm"
+                disabled={consultaMutation.isPending}
+              >
+                {consultaMutation.isPending
+                  ? 'Registrando...'
+                  : 'Registrar e reavaliar hipóteses'}
               </Button>
             </form>
           )}

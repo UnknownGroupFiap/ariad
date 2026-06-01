@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS medicos (
 
 CREATE TABLE IF NOT EXISTS casos (
   id                       TEXT PRIMARY KEY,
-  medico_id                TEXT NOT NULL REFERENCES medicos(id) ON DELETE CASCADE,
+  -- todo: restaurar FK casos.medico_id -> medicos.id no PR do Neon auth
+  medico_id                TEXT NOT NULL,
   paciente_nome            TEXT NOT NULL,
   paciente_cpf             TEXT NOT NULL,
   paciente_idade           TEXT NOT NULL,

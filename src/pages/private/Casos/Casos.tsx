@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { PrivateLayout, Select } from '@/components'
 import { useAuth } from '@/contexts/AuthContext'
 import { listarCasos } from '@/services/casos'
@@ -17,7 +18,11 @@ const sexoLabel: Record<Caso['pacienteSexo'], string> = {
 
 export default function Casos() {
   const { user } = useAuth()
-  const [casos] = useState<Caso[]>(() => (user ? listarCasos(user.id) : []))
+  const { data: casos = [], isLoading } = useQuery({
+    queryKey: ['casos', user?.id],
+    queryFn: () => listarCasos(user!.id),
+    enabled: !!user,
+  })
 
   const [busca, setBusca] = useState('')
   const [statusFiltro, setStatusFiltro] = useState('todos')
@@ -77,12 +82,17 @@ export default function Casos() {
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-ariad-beige-light">
             <p className="text-sm ">
-              {filtrados.length}{' '}
-              {filtrados.length === 1 ? 'caso encontrado' : 'casos encontrados'}
+              {isLoading
+                ? 'Carregando casos...'
+                : `${filtrados.length} ${
+                    filtrados.length === 1
+                      ? 'caso encontrado'
+                      : 'casos encontrados'
+                  }`}
             </p>
           </div>
 
-          {filtrados.length === 0 ? (
+          {!isLoading && filtrados.length === 0 ? (
             <p className=" text-center py-12">
               Nenhum caso corresponde aos filtros.
             </p>

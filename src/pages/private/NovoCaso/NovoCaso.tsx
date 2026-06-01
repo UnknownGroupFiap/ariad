@@ -1,20 +1,11 @@
-import { useState, type FormEvent, type KeyboardEvent } from 'react'
+import { useMemo, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  PrivateLayout,
-  Card,
-  Input,
-  Select,
-  Textarea,
-  Button,
-} from '@/components'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { PrivateLayout, Card, Input, Select, Textarea, Button } from '@/components'
 import BotaoGravacao from '@/components/gravacao/BotaoGravacao'
 import { useAuth } from '@/contexts/AuthContext'
-import { criarCaso, obterCasoPorCpf, adicionarConsulta } from '@/services/casos'
-import {
-  buscarPacientePorCpf,
-  temIntegracaoAtiva,
-} from '@/services/integracoes'
+import { criarCaso, adicionarConsulta, listarCasos, type ConsultaInput, type NovoCasoInput,  type DadosPaciente } from '@/services/casos'
+import { buscarPacientePorCpf, temIntegracaoAtiva } from '@/services/integracoes'
 import { CASOS_TEMPLATES } from '@/utils/mockData'
 import { ROUTES, ESPECIALIDADES } from '@/utils/constants'
 import type { Caso } from '@/types'
@@ -56,22 +47,62 @@ export default function NovoCaso() {
 
   const { user } = useAuth()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
+
+  const { data: casos = [] } = useQuery({
+    queryKey: ['casos', user?.id],
+    queryFn: () => listarCasos(user!.id),
+    enabled: !!user,
+  })
+
+  const casoExistentePorCpf = useMemo(() => {
+    const alvo = form.pacienteCpf.trim()
+    if (!alvo) return undefined
+    return casos.find((c) => c.pacienteCpf === alvo)
+  }, [casos, form.pacienteCpf])
+
+  const criarMutation = useMutation({
+    mutationFn: (input: NovoCasoInput) => criarCaso(user!.id, input),
+    onSuccess: (caso) => {
+      queryClient.invalidateQueries({ queryKey: ['casos', user!.id] })
+      navigate(ROUTES.CASO(caso.id))
+    },
+    onError: (e: Error) => setErro(e.message),
+  })
+
+  const adicionarConsultaMutation = useMutation({
+    mutationFn: (vars: {
+      casoId: string
+      input: ConsultaInput
+      paciente?: Partial<DadosPaciente>
+    }) =>
+      adicionarConsulta(user!.id, vars.casoId, vars.input, vars.paciente),
+    onSuccess: (caso) => {
+      queryClient.invalidateQueries({ queryKey: ['casos', user!.id] })
+      queryClient.invalidateQueries({ queryKey: ['caso', user!.id, caso.id] })
+      navigate(ROUTES.CASO(caso.id))
+    },
+    onError: (e: Error) => setErro(e.message),
+  })
+
+  const enviando =
+    criarMutation.isPending || adicionarConsultaMutation.isPending
 
   const set = <K extends keyof Form>(campo: K, valor: Form[K]) =>
     setForm((f) => ({ ...f, [campo]: valor }))
 
-  const cpfJaRegistrado = (cpf: string) =>
-    !!user && !!obterCasoPorCpf(user.id, cpf)
-
   const onCpfChange = (cpf: string) => {
+    const alvo = cpf.trim()
+    const jaRegistrado =
+      alvo !== '' && casos.some((c) => c.pacienteCpf === alvo)
+
     setForm((f) => ({
       ...f,
       pacienteCpf: cpf,
-      primeiraConsulta: !cpfJaRegistrado(cpf),
+      primeiraConsulta: !jaRegistrado,
     }))
     setDadosImportados(false)
 
-    // Auto-fill via integração com prontuário
     if (temIntegracaoAtiva()) {
       const paciente = buscarPacientePorCpf(cpf)
       if (paciente) {
@@ -83,7 +114,7 @@ export default function NovoCaso() {
           pacienteSexo: paciente.sexo,
           pacienteRegiao: paciente.regiao,
           historicoFamiliar: paciente.historicoFamiliar,
-          primeiraConsulta: !cpfJaRegistrado(cpf),
+          primeiraConsulta: !jaRegistrado,
         }))
         setDadosImportados(true)
       }
@@ -142,19 +173,17 @@ export default function NovoCaso() {
     }
 
     const sintomasTexto = sintomas.join(', ')
-    const existente = obterCasoPorCpf(user.id, form.pacienteCpf)
 
-    if (existente) {
-      const atualizado = adicionarConsulta(
-        user.id,
-        existente.id,
-        {
+    if (casoExistentePorCpf) {
+      adicionarConsultaMutation.mutate({
+        casoId: casoExistentePorCpf.id,
+        input: {
           sintomas: sintomasTexto,
           evolucao: form.evolucao,
           primeiraConsulta: false,
           data: new Date(form.data),
         },
-        {
+        paciente: {
           pacienteNome: form.pacienteNome,
           pacienteIdade: form.pacienteIdade,
           pacienteSexo: form.pacienteSexo,
@@ -162,12 +191,11 @@ export default function NovoCaso() {
           pacienteEspecialidade: form.pacienteEspecialidade,
           historicoFamiliar: form.historicoFamiliar,
         },
-      )
-      navigate(ROUTES.CASO(atualizado.id))
+      })
       return
     }
 
-    const caso = criarCaso(user.id, {
+    criarMutation.mutate({
       pacienteNome: form.pacienteNome,
       pacienteCpf: form.pacienteCpf,
       pacienteIdade: form.pacienteIdade,
@@ -180,8 +208,6 @@ export default function NovoCaso() {
       primeiraConsulta: form.primeiraConsulta,
       data: new Date(form.data),
     })
-
-    navigate(ROUTES.CASO(caso.id))
   }
 
   return (
@@ -243,7 +269,7 @@ export default function NovoCaso() {
                     value={form.pacienteCpf}
                     onChange={(e) => onCpfChange(e.target.value)}
                   />
-                  {cpfJaRegistrado(form.pacienteCpf) && (
+                  {casoExistentePorCpf && (
                     <p className="text-xs  mt-1">
                       CPF já registrado. Este caso será adicionado como nova
                       consulta do paciente.
@@ -416,12 +442,18 @@ export default function NovoCaso() {
               type="button"
               variant="outline"
               onClick={() => navigate(ROUTES.DASHBOARD)}
+              disabled={enviando}
             >
               Cancelar
             </Button>
-            <Button type="submit" variant="primary" className="flex-1">
+            <Button
+              type="submit"
+              variant="primary"
+              className="flex-1"
+              disabled={enviando}
+            >
               <i className="bi bi-stars mr-2" aria-hidden="true" />
-              Iniciar análise
+              {enviando ? 'Analisando...' : 'Iniciar análise'}
             </Button>
           </div>
         </form>
