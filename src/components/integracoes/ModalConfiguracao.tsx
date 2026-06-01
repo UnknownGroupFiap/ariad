@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Button, Input } from '@/components'
-import type { ConectorInfo, ConfigIntegracao } from '@/types'
+import type { ConectorInfo, ConfigIntegracao } from '@shared/types'
 
 type ModalConfiguracaoProps = {
   conector: ConectorInfo

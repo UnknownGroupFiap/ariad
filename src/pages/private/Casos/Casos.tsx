@@ -5,7 +5,7 @@ import { PrivateLayout, Select } from '@/components'
 import { useAuth } from '@/contexts/AuthContext'
 import { listarCasos } from '@/services/casos'
 import { ROUTES, STATUS_CASO, ESPECIALIDADES } from '@/utils/constants'
-import type { Caso } from '@/types'
+import type { Caso } from '@shared/types'
 
 const especialidadeLabel = (valor: string) =>
   ESPECIALIDADES.find((e) => e.value === valor)?.label ?? valor

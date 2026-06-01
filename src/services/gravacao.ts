@@ -1,4 +1,4 @@
-import type { EtapaProcessamento, ResultadoTranscricao } from '@/types'
+import type { EtapaProcessamento, ResultadoTranscricao } from '@shared/types'
 
 type PadraoTranscricao = {
   termos: string[]

@@ -1,5 +1,5 @@
 import { Card, Badge, Button } from '@/components'
-import type { ConectorInfo, ConfigIntegracao } from '@/types'
+import type { ConectorInfo, ConfigIntegracao } from '@shared/types'
 
 type ConnectorCardProps = {
   conector: ConectorInfo

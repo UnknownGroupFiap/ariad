@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
-import type { User } from '@/types'
+import type { User } from '@shared/types'
 import * as authService from '@/services/auth'
 import type { CadastroInput } from '@/services/auth'
 

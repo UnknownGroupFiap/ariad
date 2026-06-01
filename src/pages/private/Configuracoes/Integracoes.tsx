@@ -8,7 +8,7 @@ import {
   salvarIntegracao,
   desconectarIntegracao,
 } from '@/services/integracoes'
-import type { ConectorInfo, ConfigIntegracao } from '@/types'
+import type { ConectorInfo, ConfigIntegracao } from '@shared/types'
 
 export default function Integracoes() {
   const [configs, setConfigs] = useState<ConfigIntegracao[]>(listarIntegracoes)

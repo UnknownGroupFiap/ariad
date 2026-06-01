@@ -3,7 +3,7 @@ import type {
   ConfigIntegracao,
   PacienteImportado,
   ConectorInfo,
-} from '@/types'
+} from '@shared/types'
 
 const INTEGRACOES_KEY = 'ariad:integracoes'
 

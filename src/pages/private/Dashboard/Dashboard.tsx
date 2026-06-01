@@ -6,7 +6,7 @@ import { PrivateLayout, Card } from '@/components'
 import { useAuth } from '@/contexts/AuthContext'
 import { listarCasos } from '@/services/casos'
 import { ROUTES, STATUS_CASO } from '@/utils/constants'
-import type { Caso } from '@/types'
+import type { Caso } from '@shared/types'
 
 const MESES = [
   'Jan',

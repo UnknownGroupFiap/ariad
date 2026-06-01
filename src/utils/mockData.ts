@@ -1,4 +1,4 @@
-import type { Caso } from '@/types'
+import type { Caso } from '@shared/types'
 
 export const CASO_MOCK_1: Caso = {
   id: 'caso-001',
