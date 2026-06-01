@@ -14,8 +14,7 @@ CREATE TABLE IF NOT EXISTS medicos (
 
 
 CREATE TABLE IF NOT EXISTS casos (
-  id                       TEXT PRIMARY KEY,
-  -- todo: restaurar FK casos.medico_id -> medicos.id no PR do Neon auth
+  id                       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   medico_id                TEXT NOT NULL,
   paciente_nome            TEXT NOT NULL,
   paciente_cpf             TEXT NOT NULL,
@@ -34,8 +33,8 @@ CREATE TABLE IF NOT EXISTS casos (
 CREATE INDEX IF NOT EXISTS casos_medico_id_idx ON casos (medico_id);
 
 CREATE TABLE IF NOT EXISTS consultas (
-  id                  TEXT PRIMARY KEY,
-  caso_id             TEXT NOT NULL REFERENCES casos(id) ON DELETE CASCADE,
+  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  caso_id             UUID NOT NULL REFERENCES casos(id) ON DELETE CASCADE,
   data                TIMESTAMPTZ NOT NULL,
   primeira_consulta   BOOLEAN NOT NULL DEFAULT FALSE,
   sintomas            TEXT NOT NULL,

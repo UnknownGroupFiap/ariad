@@ -99,18 +99,16 @@ async function criar(request: Request): Promise<Response> {
   }
 
   const { hipoteses, investigacoes } = gerarDiagnostico(body.sintomas, body.evolucao)
-  const casoId = `caso-${Date.now()}`
-  const consultaId = `consulta-${Date.now()}`
 
   try {
     const casoRows = await sql`
       INSERT INTO casos (
-        id, medico_id, paciente_nome, paciente_cpf, paciente_idade,
+        medico_id, paciente_nome, paciente_cpf, paciente_idade,
         paciente_sexo, paciente_regiao, paciente_especialidade,
         historico_familiar, status, hipoteses, investigacoes
       )
       VALUES (
-        ${casoId}, ${body.medicoId}, ${body.pacienteNome}, ${body.pacienteCpf},
+        ${body.medicoId}, ${body.pacienteNome}, ${body.pacienteCpf},
         ${body.pacienteIdade}, ${body.pacienteSexo}, ${body.pacienteRegiao},
         ${body.pacienteEspecialidade}, ${body.historicoFamiliar},
         'em_analise',
@@ -134,10 +132,10 @@ async function criar(request: Request): Promise<Response> {
 
     const consultaRows = await sql`
       INSERT INTO consultas (
-        id, caso_id, data, primeira_consulta, sintomas, evolucao, status
+        caso_id, data, primeira_consulta, sintomas, evolucao, status
       )
       VALUES (
-        ${consultaId}, ${casoId}, ${body.data}::timestamptz,
+        ${casoRows[0].id}, ${body.data}::timestamptz,
         ${body.primeiraConsulta}, ${body.sintomas}, ${body.evolucao}, 'em_analise'
       )
       RETURNING
