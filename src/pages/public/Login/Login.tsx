@@ -10,8 +10,9 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [erro, setErro] = useState('')
+  const [enviando, setEnviando] = useState(false)
 
-  const { login, isLoading } = useAuth()
+  const { login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const destino =
@@ -20,11 +21,14 @@ export default function Login() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setErro('')
+    setEnviando(true)
     try {
       await login(email, senha)
       navigate(destino, { replace: true })
     } catch (err) {
       setErro(err instanceof Error ? err.message : 'Não foi possível entrar.')
+    } finally {
+      setEnviando(false)
     }
   }
 
@@ -56,9 +60,9 @@ export default function Login() {
                 type="submit"
                 variant="primary"
                 className="w-full"
-                disabled={isLoading}
+                disabled={enviando}
               >
-                {isLoading ? 'Entrando...' : 'Entrar'}
+                {enviando ? 'Entrando...' : 'Entrar'}
               </Button>
             </form>
           </Card>
