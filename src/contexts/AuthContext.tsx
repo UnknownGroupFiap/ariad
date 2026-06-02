@@ -1,70 +1,78 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
+import { createContext, useContext, useCallback, type ReactNode } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { User } from '@shared/types'
-import * as authService from '@/services/auth'
-import type { CadastroInput } from '@/services/auth'
+import { authClient } from '@/lib/auth-client'
+import { obterPerfil, atualizarPerfil, type AtualizarPerfilInput } from '@/services/perfil'
+
+export type CadastroInput = {
+  nome: string
+  email: string
+  senha: string
+}
 
 type AuthContextValue = {
   user: User | null
   isAuthenticated: boolean
   isLoading: boolean
+  perfilCompleto: boolean
   login: (email: string, senha: string) => Promise<void>
   cadastrar: (input: CadastroInput) => Promise<void>
-  logout: () => void
-  atualizarUsuario: (
-    dados: Partial<Omit<User, 'id' | 'organizacaoId' | 'isAdmin'>>,
-  ) => void
+  atualizarUsuario: (dados: AtualizarPerfilInput) => Promise<void>
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() =>
-    authService.usuarioAtual(),
-  )
-  const [isLoading, setIsLoading] = useState(false)
+  const queryClient = useQueryClient()
+  const { data: session, isPending } = authClient.useSession()
+  const usuarioId = session?.user?.id ?? null
+  const autenticado = !!usuarioId
+
+  const { data: perfil, isLoading: perfilLoading } = useQuery({
+    queryKey: ['perfil', usuarioId],
+    queryFn: obterPerfil,
+    enabled: autenticado,
+  })
 
   const login = useCallback(async (email: string, senha: string) => {
-    setIsLoading(true)
-    try {
-      setUser(authService.login(email, senha))
-    } finally {
-      setIsLoading(false)
-    }
+    const { error } = await authClient.signIn.email({ email, password: senha })
+    if (error) throw new Error(error.message ?? 'Email ou senha incorretos.')
   }, [])
 
   const cadastrar = useCallback(async (input: CadastroInput) => {
-    setIsLoading(true)
-    try {
-      setUser(authService.cadastrar(input))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
-
-  const logout = useCallback(() => {
-    authService.logout()
-    setUser(null)
+    const { error } = await authClient.signUp.email({
+      email: input.email,
+      password: input.senha,
+      name: input.nome,
+    })
+    if (error) throw new Error(error.message ?? 'Não foi possível cadastrar.')
   }, [])
 
   const atualizarUsuario = useCallback(
-    (dados: Partial<Omit<User, 'id' | 'organizacaoId' | 'isAdmin'>>) => {
-      setUser((atual) =>
-        atual ? authService.atualizarPerfil(atual.id, dados) : atual,
-      )
+    async (dados: AtualizarPerfilInput) => {
+      const atualizado = await atualizarPerfil(dados)
+      queryClient.setQueryData(['perfil', usuarioId], atualizado)
     },
-    [],
+    [queryClient, usuarioId],
   )
+
+  const logout = useCallback(async () => {
+    await authClient.signOut()
+    queryClient.clear()
+  }, [queryClient])
 
   return (
     <AuthContext.Provider
       value={{
-        user,
-        isAuthenticated: user !== null,
-        isLoading,
+        user: perfil ?? null,
+        isAuthenticated: autenticado,
+        isLoading: isPending || (autenticado && perfilLoading),
+        perfilCompleto: !!(perfil?.crm && perfil?.especialidade),
         login,
         cadastrar,
-        logout,
         atualizarUsuario,
+        logout,
       }}
     >
       {children}

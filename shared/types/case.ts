@@ -30,7 +30,6 @@ export type Consulta = {
 export type Caso = {
   id: string
   pacienteNome: string
-  pacienteCpf: string
   pacienteIdade: string
   pacienteSexo: 'masculino' | 'feminino' | 'outro'
   pacienteRegiao: string

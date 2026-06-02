@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { PrivateRoute, ScrollToTop } from '@/components'
 import { ROUTES } from '@/utils/constants'
@@ -15,6 +15,7 @@ import Dashboard from '@/pages/private/Dashboard/Dashboard'
 import Casos from '@/pages/private/Casos/Casos'
 import NovoCaso from '@/pages/private/NovoCaso/NovoCaso'
 import Caso from '@/pages/private/Caso/Caso'
+import CompletarPerfil from '@/pages/private/CompletarPerfil/CompletarPerfil'
 import ConfigPessoal from '@/pages/private/Configuracoes/Pessoais'
 import ConfigOrganizacao from '@/pages/private/Configuracoes/Organizacao'
 import Integracoes from '@/pages/private/Configuracoes/Integracoes'
@@ -22,76 +23,82 @@ import Integracoes from '@/pages/private/Configuracoes/Integracoes'
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path={ROUTES.HOME} element={<Inicio />} />
-          <Route path={ROUTES.PLATAFORMA} element={<Plataforma />} />
-          <Route path={ROUTES.SOBRE} element={<Sobre />} />
-          <Route path={ROUTES.SOBRE_PROJETO} element={<SobreProjeto />} />
-          <Route path={ROUTES.CONTATO} element={<Contato />} />
-          <Route path={ROUTES.LOGIN} element={<Login />} />
-          <Route path={ROUTES.CADASTRO} element={<Cadastro />} />
+      <ScrollToTop />
+      <Routes>
+        <Route path={ROUTES.HOME} element={<Inicio />} />
+        <Route path={ROUTES.PLATAFORMA} element={<Plataforma />} />
+        <Route path={ROUTES.SOBRE} element={<Sobre />} />
+        <Route path={ROUTES.SOBRE_PROJETO} element={<SobreProjeto />} />
+        <Route path={ROUTES.CONTATO} element={<Contato />} />
+        <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.CADASTRO} element={<Cadastro />} />
 
-          <Route
-            path={ROUTES.DASHBOARD}
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path={ROUTES.CASOS}
-            element={
-              <PrivateRoute>
-                <Casos />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path={ROUTES.NOVO_CASO}
-            element={
-              <PrivateRoute>
-                <NovoCaso />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/caso/:id"
-            element={
-              <PrivateRoute>
-                <Caso />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path={ROUTES.CONFIG_PESSOAL}
-            element={
-              <PrivateRoute>
-                <ConfigPessoal />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path={ROUTES.CONFIG_ORG}
-            element={
-              <PrivateRoute>
-                <ConfigOrganizacao />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path={ROUTES.CONFIG_INTEGRACOES}
-            element={
-              <PrivateRoute>
-                <Integracoes />
-              </PrivateRoute>
-            }
-          />
-          <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
-        </Routes>
-      </BrowserRouter>
+        <Route
+          path={ROUTES.COMPLETAR_PERFIL}
+          element={
+            <PrivateRoute requerPerfilCompleto={false}>
+              <CompletarPerfil />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={ROUTES.DASHBOARD}
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={ROUTES.CASOS}
+          element={
+            <PrivateRoute>
+              <Casos />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={ROUTES.NOVO_CASO}
+          element={
+            <PrivateRoute>
+              <NovoCaso />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/caso/:id"
+          element={
+            <PrivateRoute>
+              <Caso />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={ROUTES.CONFIG_PESSOAL}
+          element={
+            <PrivateRoute>
+              <ConfigPessoal />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={ROUTES.CONFIG_ORG}
+          element={
+            <PrivateRoute>
+              <ConfigOrganizacao />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={ROUTES.CONFIG_INTEGRACOES}
+          element={
+            <PrivateRoute>
+              <Integracoes />
+            </PrivateRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
+      </Routes>
     </AuthProvider>
   )
 }

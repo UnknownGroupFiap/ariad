@@ -6,6 +6,7 @@ export const ROUTES = {
   CONTATO: '/contato',
   LOGIN: '/login',
   CADASTRO: '/cadastro',
+  COMPLETAR_PERFIL: '/completar-perfil',
   DASHBOARD: '/dashboard',
   CASOS: '/casos',
   NOVO_CASO: '/caso/novo',

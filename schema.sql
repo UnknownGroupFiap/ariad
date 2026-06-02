@@ -2,11 +2,10 @@ CREATE TABLE IF NOT EXISTS medicos (
   id              TEXT PRIMARY KEY,
   nome            TEXT NOT NULL,
   email           TEXT NOT NULL UNIQUE,
-  senha           TEXT NOT NULL,
-  crm             TEXT NOT NULL,
-  uf              TEXT NOT NULL,
-  especialidade   TEXT NOT NULL,
-  nome_clinica    TEXT NOT NULL,
+  crm             TEXT NOT NULL DEFAULT '',
+  uf              TEXT NOT NULL DEFAULT '',
+  especialidade   TEXT NOT NULL DEFAULT '',
+  nome_clinica    TEXT NOT NULL DEFAULT '',
   is_admin        BOOLEAN NOT NULL DEFAULT FALSE,
   organizacao_id  TEXT NOT NULL,
   criado_em       TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -15,9 +14,9 @@ CREATE TABLE IF NOT EXISTS medicos (
 
 CREATE TABLE IF NOT EXISTS casos (
   id                       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  medico_id                TEXT NOT NULL,
+  medico_id                TEXT NOT NULL REFERENCES medicos(id),
   paciente_nome            TEXT NOT NULL,
-  paciente_cpf             TEXT NOT NULL,
+  paciente_cpf_hash        TEXT NOT NULL,
   paciente_idade           TEXT NOT NULL,
   paciente_sexo            TEXT NOT NULL CHECK (paciente_sexo IN ('masculino','feminino','outro')),
   paciente_regiao          TEXT NOT NULL,
@@ -31,6 +30,7 @@ CREATE TABLE IF NOT EXISTS casos (
 );
 
 CREATE INDEX IF NOT EXISTS casos_medico_id_idx ON casos (medico_id);
+CREATE INDEX IF NOT EXISTS casos_cpf_hash_idx ON casos (paciente_cpf_hash);
 
 CREATE TABLE IF NOT EXISTS consultas (
   id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { PrivateLayout, Card, Input, Select, Button } from '@/components'
 import { useAuth } from '@/contexts/AuthContext'
 import { UFS, ESPECIALIDADES } from '@/utils/constants'
-import { validateEmail, validateCRM } from '@/utils/validators'
+import { validateCRM } from '@/utils/validators'
 
 export default function Pessoais() {
   const { user, atualizarUsuario } = useAuth()
@@ -23,15 +23,18 @@ export default function Pessoais() {
     setSalvo(false)
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setErro('')
     if (!form.nome.trim()) return setErro('Informe seu nome.')
-    if (!validateEmail(form.email)) return setErro('Email inválido.')
     if (!validateCRM(form.crm)) return setErro('CRM deve ter de 5 a 7 dígitos.')
 
-    atualizarUsuario(form)
-    setSalvo(true)
+    try {
+      await atualizarUsuario(form)
+      setSalvo(true)
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : 'Não foi possível salvar.')
+    }
   }
 
   return (
@@ -53,7 +56,8 @@ export default function Pessoais() {
               label="Email"
               type="email"
               value={form.email}
-              onChange={(e) => set('email', e.target.value)}
+              readOnly
+              disabled
             />
             <div className="grid grid-cols-2 gap-4">
               <Input

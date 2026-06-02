@@ -1,4 +1,5 @@
 import type { Caso, Consulta } from '@shared/types'
+import { apiRequest } from './http'
 
 type CasoSerializado = Omit<Caso, 'criadoEm' | 'atualizadoEm' | 'consultas'> & {
   criadoEm: string
@@ -15,28 +16,21 @@ function reidratar(c: CasoSerializado): Caso {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(path, {
-    ...init,
-    headers: { 'Content-Type': 'application/json', ...init?.headers },
-  })
-  if (!response.ok) {
-    const body = (await response.json().catch(() => ({}))) as { error?: string }
-    throw new Error(body.error ?? `Erro ${response.status}`)
-  }
-  return response.json() as Promise<T>
+export async function listarCasos(): Promise<Caso[]> {
+  const casos = await apiRequest<CasoSerializado[]>('/api/casos')
+  return casos.map(reidratar)
 }
 
-export async function listarCasos(medicoId: string): Promise<Caso[]> {
-  const casos = await request<CasoSerializado[]>(
-    `/api/casos?medicoId=${encodeURIComponent(medicoId)}`,
+export async function buscarCasoPorCpf(cpf: string): Promise<Caso[]> {
+  const casos = await apiRequest<CasoSerializado[]>(
+    `/api/casos?cpf=${encodeURIComponent(cpf)}`,
   )
   return casos.map(reidratar)
 }
 
-export async function obterCaso(medicoId: string, id: string): Promise<Caso> {
-  const caso = await request<CasoSerializado>(
-    `/api/casos/${encodeURIComponent(id)}?medicoId=${encodeURIComponent(medicoId)}`,
+export async function obterCaso(id: string): Promise<Caso> {
+  const caso = await apiRequest<CasoSerializado>(
+    `/api/casos/${encodeURIComponent(id)}`,
   )
   return reidratar(caso)
 }
@@ -58,17 +52,10 @@ export type NovoCasoInput = DadosPaciente & {
   data: Date
 }
 
-export async function criarCaso(
-  medicoId: string,
-  input: NovoCasoInput,
-): Promise<Caso> {
-  const caso = await request<CasoSerializado>('/api/casos', {
+export async function criarCaso(input: NovoCasoInput): Promise<Caso> {
+  const caso = await apiRequest<CasoSerializado>('/api/casos', {
     method: 'POST',
-    body: JSON.stringify({
-      medicoId,
-      ...input,
-      data: input.data.toISOString(),
-    }),
+    body: JSON.stringify({ ...input, data: input.data.toISOString() }),
   })
   return reidratar(caso)
 }
@@ -81,17 +68,15 @@ export type ConsultaInput = {
 }
 
 export async function adicionarConsulta(
-  medicoId: string,
   casoId: string,
   input: ConsultaInput,
   paciente?: Partial<DadosPaciente>,
 ): Promise<Caso> {
-  const caso = await request<CasoSerializado>(
+  const caso = await apiRequest<CasoSerializado>(
     `/api/casos/${encodeURIComponent(casoId)}/consultas`,
     {
       method: 'POST',
       body: JSON.stringify({
-        medicoId,
         ...input,
         data: input.data.toISOString(),
         paciente,
@@ -102,31 +87,29 @@ export async function adicionarConsulta(
 }
 
 export async function salvarTranscricao(
-  medicoId: string,
   casoId: string,
   consultaId: string,
   transcricao: string,
 ): Promise<Caso> {
-  const caso = await request<CasoSerializado>(
+  const caso = await apiRequest<CasoSerializado>(
     `/api/casos/${encodeURIComponent(casoId)}/consultas/${encodeURIComponent(consultaId)}`,
     {
       method: 'PATCH',
-      body: JSON.stringify({ medicoId, transcricao }),
+      body: JSON.stringify({ transcricao }),
     },
   )
   return reidratar(caso)
 }
 
 export async function atualizarCaso(
-  medicoId: string,
   casoId: string,
   dados: Partial<Pick<Caso, 'status'>>,
 ): Promise<Caso> {
-  const caso = await request<CasoSerializado>(
+  const caso = await apiRequest<CasoSerializado>(
     `/api/casos/${encodeURIComponent(casoId)}`,
     {
       method: 'PATCH',
-      body: JSON.stringify({ medicoId, ...dados }),
+      body: JSON.stringify(dados),
     },
   )
   return reidratar(caso)

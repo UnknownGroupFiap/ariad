@@ -1,5 +1,7 @@
 import { sql } from './_lib/sql'
 import { gerarDiagnostico } from './_lib/motor'
+import { verificarMedico, respostaNaoAutorizado, NaoAutorizado, type Medico } from './_lib/auth'
+import { hashCpf } from './_lib/cpf'
 
 export const config = { runtime: 'edge' }
 
@@ -14,7 +16,6 @@ type DadosPaciente = {
 }
 
 type CriarCasoBody = DadosPaciente & {
-  medicoId: string
   sintomas: string
   evolucao: string
   primeiraConsulta: boolean
@@ -22,16 +23,22 @@ type CriarCasoBody = DadosPaciente & {
 }
 
 export default async function handler(request: Request): Promise<Response> {
-  if (request.method === 'GET') return listar(request)
-  if (request.method === 'POST') return criar(request)
+  let medico: Medico
+  try {
+    medico = await verificarMedico(request)
+  } catch (error) {
+    if (error instanceof NaoAutorizado) return respostaNaoAutorizado()
+    throw error
+  }
+
+  if (request.method === 'GET') return listar(request, medico)
+  if (request.method === 'POST') return criar(request, medico)
   return Response.json({ error: 'metodo nao permitido' }, { status: 405 })
 }
 
-async function listar(request: Request): Promise<Response> {
-  const medicoId = new URL(request.url).searchParams.get('medicoId')
-  if (!medicoId) {
-    return Response.json({ error: 'medicoId obrigatorio' }, { status: 400 })
-  }
+async function listar(request: Request, medico: Medico): Promise<Response> {
+  const cpf = new URL(request.url).searchParams.get('cpf')
+  const cpfHash = cpf ? await hashCpf(cpf) : null
 
   try {
     const rows = await sql`
@@ -39,7 +46,6 @@ async function listar(request: Request): Promise<Response> {
         c.id,
         c.medico_id              AS "medicoId",
         c.paciente_nome          AS "pacienteNome",
-        c.paciente_cpf           AS "pacienteCpf",
         c.paciente_idade         AS "pacienteIdade",
         c.paciente_sexo          AS "pacienteSexo",
         c.paciente_regiao        AS "pacienteRegiao",
@@ -69,7 +75,8 @@ async function listar(request: Request): Promise<Response> {
           '[]'::json
         ) AS consultas
       FROM casos c
-      WHERE c.medico_id = ${medicoId}
+      WHERE c.medico_id = ${medico.id}
+        AND (${cpfHash}::text IS NULL OR c.paciente_cpf_hash = ${cpfHash})
       ORDER BY c.atualizado_em DESC
     `
     return Response.json(rows)
@@ -79,11 +86,10 @@ async function listar(request: Request): Promise<Response> {
   }
 }
 
-async function criar(request: Request): Promise<Response> {
+async function criar(request: Request, medico: Medico): Promise<Response> {
   const body = (await request.json()) as CriarCasoBody
 
   if (
-    !body.medicoId ||
     !body.pacienteNome ||
     !body.pacienteCpf ||
     !body.pacienteIdade ||
@@ -98,17 +104,18 @@ async function criar(request: Request): Promise<Response> {
     )
   }
 
+  const cpfHash = await hashCpf(body.pacienteCpf)
   const { hipoteses, investigacoes } = gerarDiagnostico(body.sintomas, body.evolucao)
 
   try {
     const casoRows = await sql`
       INSERT INTO casos (
-        medico_id, paciente_nome, paciente_cpf, paciente_idade,
+        medico_id, paciente_nome, paciente_cpf_hash, paciente_idade,
         paciente_sexo, paciente_regiao, paciente_especialidade,
         historico_familiar, status, hipoteses, investigacoes
       )
       VALUES (
-        ${body.medicoId}, ${body.pacienteNome}, ${body.pacienteCpf},
+        ${medico.id}, ${body.pacienteNome}, ${cpfHash},
         ${body.pacienteIdade}, ${body.pacienteSexo}, ${body.pacienteRegiao},
         ${body.pacienteEspecialidade}, ${body.historicoFamiliar},
         'em_analise',
@@ -119,7 +126,6 @@ async function criar(request: Request): Promise<Response> {
         id,
         medico_id              AS "medicoId",
         paciente_nome          AS "pacienteNome",
-        paciente_cpf           AS "pacienteCpf",
         paciente_idade         AS "pacienteIdade",
         paciente_sexo          AS "pacienteSexo",
         paciente_regiao        AS "pacienteRegiao",

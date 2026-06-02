@@ -1,10 +1,10 @@
-import { useMemo, useState, type FormEvent, type KeyboardEvent } from 'react'
+import { useState, type FormEvent, type KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { PrivateLayout, Card, Input, Select, Textarea, Button } from '@/components'
 import BotaoGravacao from '@/components/gravacao/BotaoGravacao'
 import { useAuth } from '@/contexts/AuthContext'
-import { criarCaso, adicionarConsulta, listarCasos, type ConsultaInput, type NovoCasoInput,  type DadosPaciente } from '@/services/casos'
+import { criarCaso, adicionarConsulta, buscarCasoPorCpf, type ConsultaInput, type NovoCasoInput, type DadosPaciente } from '@/services/casos'
 import { buscarPacientePorCpf, temIntegracaoAtiva } from '@/services/integracoes'
 import { CASOS_TEMPLATES } from '@/utils/mockData'
 import { ROUTES, ESPECIALIDADES } from '@/utils/constants'
@@ -49,20 +49,22 @@ export default function NovoCaso() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const { data: casos = [] } = useQuery({
-    queryKey: ['casos', user?.id],
-    queryFn: () => listarCasos(user!.id),
-    enabled: !!user,
-  })
+  const cpfDigitos = form.pacienteCpf.replace(/\D/g, '')
+  const cpfCompleto = cpfDigitos.length === 11
 
-  const casoExistentePorCpf = useMemo(() => {
-    const alvo = form.pacienteCpf.trim()
-    if (!alvo) return undefined
-    return casos.find((c) => c.pacienteCpf === alvo)
-  }, [casos, form.pacienteCpf])
+  const { data: casosDoCpf = [] } = useQuery({
+    queryKey: ['casos', 'cpf', cpfDigitos],
+    queryFn: () => buscarCasoPorCpf(cpfDigitos),
+    enabled: !!user && cpfCompleto,
+  })
+  const casoExistentePorCpf = cpfCompleto ? casosDoCpf[0] : undefined
+
+  const primeiraConsultaEfetiva = casoExistentePorCpf
+    ? false
+    : form.primeiraConsulta
 
   const criarMutation = useMutation({
-    mutationFn: (input: NovoCasoInput) => criarCaso(user!.id, input),
+    mutationFn: (input: NovoCasoInput) => criarCaso(input),
     onSuccess: (caso) => {
       queryClient.invalidateQueries({ queryKey: ['casos', user!.id] })
       navigate(ROUTES.CASO(caso.id))
@@ -75,8 +77,7 @@ export default function NovoCaso() {
       casoId: string
       input: ConsultaInput
       paciente?: Partial<DadosPaciente>
-    }) =>
-      adicionarConsulta(user!.id, vars.casoId, vars.input, vars.paciente),
+    }) => adicionarConsulta(vars.casoId, vars.input, vars.paciente),
     onSuccess: (caso) => {
       queryClient.invalidateQueries({ queryKey: ['casos', user!.id] })
       queryClient.invalidateQueries({ queryKey: ['caso', user!.id, caso.id] })
@@ -92,15 +93,7 @@ export default function NovoCaso() {
     setForm((f) => ({ ...f, [campo]: valor }))
 
   const onCpfChange = (cpf: string) => {
-    const alvo = cpf.trim()
-    const jaRegistrado =
-      alvo !== '' && casos.some((c) => c.pacienteCpf === alvo)
-
-    setForm((f) => ({
-      ...f,
-      pacienteCpf: cpf,
-      primeiraConsulta: !jaRegistrado,
-    }))
+    setForm((f) => ({ ...f, pacienteCpf: cpf }))
     setDadosImportados(false)
 
     if (temIntegracaoAtiva()) {
@@ -114,7 +107,6 @@ export default function NovoCaso() {
           pacienteSexo: paciente.sexo,
           pacienteRegiao: paciente.regiao,
           historicoFamiliar: paciente.historicoFamiliar,
-          primeiraConsulta: !jaRegistrado,
         }))
         setDadosImportados(true)
       }
@@ -205,7 +197,7 @@ export default function NovoCaso() {
       historicoFamiliar: form.historicoFamiliar,
       sintomas: sintomasTexto,
       evolucao: form.evolucao,
-      primeiraConsulta: form.primeiraConsulta,
+      primeiraConsulta: primeiraConsultaEfetiva,
       data: new Date(form.data),
     })
   }
@@ -425,7 +417,8 @@ export default function NovoCaso() {
                 <label className="flex items-center gap-2 text-sm  pb-2.5">
                   <input
                     type="checkbox"
-                    checked={form.primeiraConsulta}
+                    checked={primeiraConsultaEfetiva}
+                    disabled={!!casoExistentePorCpf}
                     onChange={(e) => set('primeiraConsulta', e.target.checked)}
                     className="accent-ariad-green-water"
                   />
