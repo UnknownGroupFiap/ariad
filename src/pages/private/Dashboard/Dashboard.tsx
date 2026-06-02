@@ -33,7 +33,7 @@ export default function Dashboard() {
   const { user } = useAuth()
   const { data: casos = [] } = useQuery({
     queryKey: ['casos', user?.id],
-    queryFn: () => listarCasos(user!.id),
+    queryFn: () => listarCasos(),
     enabled: !!user,
   })
 

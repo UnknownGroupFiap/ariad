@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { PrivateLayout, Select } from '@/components'
 import { useAuth } from '@/contexts/AuthContext'
-import { listarCasos } from '@/services/casos'
+import { listarCasos, buscarCasoPorCpf } from '@/services/casos'
 import { ROUTES, STATUS_CASO, ESPECIALIDADES } from '@/utils/constants'
 import type { Caso } from '@shared/types'
 
@@ -20,25 +20,34 @@ export default function Casos() {
   const { user } = useAuth()
   const { data: casos = [], isLoading } = useQuery({
     queryKey: ['casos', user?.id],
-    queryFn: () => listarCasos(user!.id),
+    queryFn: () => listarCasos(),
     enabled: !!user,
   })
 
   const [busca, setBusca] = useState('')
   const [statusFiltro, setStatusFiltro] = useState('todos')
 
-  const filtrados = useMemo(
-    () =>
-      casos.filter((c) => {
-        const termo = busca.trim().toLowerCase()
-        const buscaOk =
-          c.pacienteNome.toLowerCase().includes(termo) ||
-          c.pacienteCpf.toLowerCase().includes(termo)
-        const statusOk = statusFiltro === 'todos' || c.status === statusFiltro
-        return buscaOk && statusOk
-      }),
-    [casos, busca, statusFiltro],
-  )
+  const termo = busca.trim()
+  const cpfDigitos = termo.replace(/\D/g, '')
+  const buscandoPorCpf = cpfDigitos.length === 11
+  // CPF é hash: só busca por match exato dos 11 dígitos, não substring.
+  const cpfIncompleto = /^[\d.\-\s]+$/.test(termo) && cpfDigitos.length > 0 && !buscandoPorCpf
+
+  const { data: porCpf = [] } = useQuery({
+    queryKey: ['casos-por-cpf', cpfDigitos],
+    queryFn: () => buscarCasoPorCpf(cpfDigitos),
+    enabled: !!user && buscandoPorCpf,
+  })
+
+  const filtrados = useMemo(() => {
+    const base = buscandoPorCpf ? porCpf : casos
+    const termoNome = termo.toLowerCase()
+    return base.filter((c) => {
+      const buscaOk = buscandoPorCpf || c.pacienteNome.toLowerCase().includes(termoNome)
+      const statusOk = statusFiltro === 'todos' || c.status === statusFiltro
+      return buscaOk && statusOk
+    })
+  }, [casos, porCpf, buscandoPorCpf, termo, statusFiltro])
 
   return (
     <PrivateLayout>
@@ -94,7 +103,9 @@ export default function Casos() {
 
           {!isLoading && filtrados.length === 0 ? (
             <p className=" text-center py-12">
-              Nenhum caso corresponde aos filtros.
+              {cpfIncompleto
+                ? 'Digite os 11 dígitos do CPF para buscar por CPF.'
+                : 'Nenhum caso corresponde aos filtros.'}
             </p>
           ) : (
             <ul>

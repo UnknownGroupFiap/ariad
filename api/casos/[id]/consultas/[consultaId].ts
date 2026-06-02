@@ -1,9 +1,9 @@
 import { sql } from '../../../_lib/sql'
+import { verificarMedico, respostaNaoAutorizado, NaoAutorizado, type Medico } from '../../../_lib/auth'
 
 export const config = { runtime: 'edge' }
 
 type Body = {
-  medicoId: string
   transcricao?: string
 }
 
@@ -17,19 +17,24 @@ export default async function handler(request: Request): Promise<Response> {
     return Response.json({ error: 'metodo nao permitido' }, { status: 405 })
   }
 
+  let medico: Medico
+  try {
+    medico = await verificarMedico(request)
+  } catch (error) {
+    if (error instanceof NaoAutorizado) return respostaNaoAutorizado()
+    throw error
+  }
+
   const { casoId, consultaId } = extrairIds(request)
   if (!casoId || !consultaId) {
     return Response.json({ error: 'ids obrigatorios' }, { status: 400 })
   }
 
   const body = (await request.json()) as Body
-  if (!body.medicoId) {
-    return Response.json({ error: 'medicoId obrigatorio' }, { status: 400 })
-  }
 
   try {
     const dono = await sql`
-      SELECT 1 FROM casos WHERE id = ${casoId} AND medico_id = ${body.medicoId} LIMIT 1
+      SELECT 1 FROM casos WHERE id = ${casoId} AND medico_id = ${medico.id} LIMIT 1
     `
     if (dono.length === 0) {
       return Response.json({ error: 'caso nao encontrado' }, { status: 404 })
@@ -54,7 +59,6 @@ export default async function handler(request: Request): Promise<Response> {
         id,
         medico_id              AS "medicoId",
         paciente_nome          AS "pacienteNome",
-        paciente_cpf           AS "pacienteCpf",
         paciente_idade         AS "pacienteIdade",
         paciente_sexo          AS "pacienteSexo",
         paciente_regiao        AS "pacienteRegiao",

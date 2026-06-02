@@ -37,7 +37,7 @@ export default function Caso() {
     isError,
   } = useQuery({
     queryKey: ['caso', user?.id, id],
-    queryFn: () => obterCaso(user!.id, id),
+    queryFn: () => obterCaso(id),
     enabled: !!user && !!id,
   })
 
@@ -48,13 +48,13 @@ export default function Caso() {
 
   const statusMutation = useMutation({
     mutationFn: (status: CasoType['status']) =>
-      atualizarCaso(user!.id, id, { status }),
+      atualizarCaso(id, { status }),
     onSuccess: setCasoCache,
   })
 
   const consultaMutation = useMutation({
     mutationFn: (vars: { sintomas: string; evolucao: string }) =>
-      adicionarConsulta(user!.id, id, {
+      adicionarConsulta(id, {
         sintomas: vars.sintomas,
         evolucao: vars.evolucao,
         primeiraConsulta: false,
@@ -65,7 +65,7 @@ export default function Caso() {
 
   const transcricaoMutation = useMutation({
     mutationFn: (vars: { consultaId: string; transcricao: string }) =>
-      salvarTranscricao(user!.id, id, vars.consultaId, vars.transcricao),
+      salvarTranscricao(id, vars.consultaId, vars.transcricao),
     onSuccess: setCasoCache,
   })
 
@@ -179,8 +179,8 @@ export default function Caso() {
                 </span>
               </div>
               <p className="text-sm  mt-1">
-                CPF {caso.pacienteCpf} · {caso.pacienteIdade} ·{' '}
-                {sexoLabel[caso.pacienteSexo]} · {caso.pacienteRegiao} ·{' '}
+                {caso.pacienteIdade} · {sexoLabel[caso.pacienteSexo]} ·{' '}
+                {caso.pacienteRegiao} ·{' '}
                 {especialidadeLabel(caso.pacienteEspecialidade)}
               </p>
               <p className="text-sm  mt-1">

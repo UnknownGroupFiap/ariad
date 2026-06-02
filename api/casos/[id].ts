@@ -1,9 +1,9 @@
 import { sql } from '../_lib/sql'
+import { verificarMedico, respostaNaoAutorizado, NaoAutorizado, type Medico } from '../_lib/auth'
 
 export const config = { runtime: 'edge' }
 
 type AtualizarBody = {
-  medicoId: string
   status?: 'em_analise' | 'aguardando_exames' | 'finalizado'
 }
 
@@ -12,29 +12,31 @@ function extrairId(request: Request): string {
 }
 
 export default async function handler(request: Request): Promise<Response> {
+  let medico: Medico
+  try {
+    medico = await verificarMedico(request)
+  } catch (error) {
+    if (error instanceof NaoAutorizado) return respostaNaoAutorizado()
+    throw error
+  }
+
   const id = extrairId(request)
   if (!id) {
     return Response.json({ error: 'id obrigatorio' }, { status: 400 })
   }
 
-  if (request.method === 'GET') return obter(request, id)
-  if (request.method === 'PATCH') return atualizar(request, id)
+  if (request.method === 'GET') return obter(id, medico)
+  if (request.method === 'PATCH') return atualizar(request, id, medico)
   return Response.json({ error: 'metodo nao permitido' }, { status: 405 })
 }
 
-async function obter(request: Request, id: string): Promise<Response> {
-  const medicoId = new URL(request.url).searchParams.get('medicoId')
-  if (!medicoId) {
-    return Response.json({ error: 'medicoId obrigatorio' }, { status: 400 })
-  }
-
+async function obter(id: string, medico: Medico): Promise<Response> {
   try {
     const rows = await sql`
       SELECT
         c.id,
         c.medico_id              AS "medicoId",
         c.paciente_nome          AS "pacienteNome",
-        c.paciente_cpf           AS "pacienteCpf",
         c.paciente_idade         AS "pacienteIdade",
         c.paciente_sexo          AS "pacienteSexo",
         c.paciente_regiao        AS "pacienteRegiao",
@@ -62,7 +64,7 @@ async function obter(request: Request, id: string): Promise<Response> {
           '[]'::json
         ) AS consultas
       FROM casos c
-      WHERE c.id = ${id} AND c.medico_id = ${medicoId}
+      WHERE c.id = ${id} AND c.medico_id = ${medico.id}
       LIMIT 1
     `
 
@@ -77,24 +79,19 @@ async function obter(request: Request, id: string): Promise<Response> {
   }
 }
 
-async function atualizar(request: Request, id: string): Promise<Response> {
+async function atualizar(request: Request, id: string, medico: Medico): Promise<Response> {
   const body = (await request.json()) as AtualizarBody
-
-  if (!body.medicoId) {
-    return Response.json({ error: 'medicoId obrigatorio' }, { status: 400 })
-  }
 
   try {
     const rows = await sql`
       UPDATE casos SET
         status        = COALESCE(${body.status ?? null}, status),
         atualizado_em = NOW()
-      WHERE id = ${id} AND medico_id = ${body.medicoId}
+      WHERE id = ${id} AND medico_id = ${medico.id}
       RETURNING
         id,
         medico_id              AS "medicoId",
         paciente_nome          AS "pacienteNome",
-        paciente_cpf           AS "pacienteCpf",
         paciente_idade         AS "pacienteIdade",
         paciente_sexo          AS "pacienteSexo",
         paciente_regiao        AS "pacienteRegiao",

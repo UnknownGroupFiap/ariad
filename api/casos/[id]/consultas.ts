@@ -1,10 +1,10 @@
 import { sql } from '../../_lib/sql'
 import { gerarDiagnostico } from '../../_lib/motor'
+import { verificarMedico, respostaNaoAutorizado, NaoAutorizado, type Medico } from '../../_lib/auth'
 
 export const config = { runtime: 'edge' }
 
 type Body = {
-  medicoId: string
   sintomas: string
   evolucao: string
   primeiraConsulta: boolean
@@ -28,13 +28,21 @@ export default async function handler(request: Request): Promise<Response> {
     return Response.json({ error: 'metodo nao permitido' }, { status: 405 })
   }
 
+  let medico: Medico
+  try {
+    medico = await verificarMedico(request)
+  } catch (error) {
+    if (error instanceof NaoAutorizado) return respostaNaoAutorizado()
+    throw error
+  }
+
   const casoId = extrairCasoId(request)
   if (!casoId) {
     return Response.json({ error: 'casoId obrigatorio' }, { status: 400 })
   }
 
   const body = (await request.json()) as Body
-  if (!body.medicoId || !body.sintomas || !body.data) {
+  if (!body.sintomas || !body.data) {
     return Response.json({ error: 'campos obrigatorios faltando' }, { status: 400 })
   }
 
@@ -53,12 +61,11 @@ export default async function handler(request: Request): Promise<Response> {
         hipoteses              = ${JSON.stringify(hipoteses)}::jsonb,
         investigacoes          = ${JSON.stringify(investigacoes)}::jsonb,
         atualizado_em          = NOW()
-      WHERE id = ${casoId} AND medico_id = ${body.medicoId}
+      WHERE id = ${casoId} AND medico_id = ${medico.id}
       RETURNING
         id,
         medico_id              AS "medicoId",
         paciente_nome          AS "pacienteNome",
-        paciente_cpf           AS "pacienteCpf",
         paciente_idade         AS "pacienteIdade",
         paciente_sexo          AS "pacienteSexo",
         paciente_regiao        AS "pacienteRegiao",

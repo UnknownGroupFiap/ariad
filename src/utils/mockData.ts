@@ -3,7 +3,6 @@ import type { Caso } from '@shared/types'
 export const CASO_MOCK_1: Caso = {
   id: 'caso-001',
   pacienteNome: 'Antônio Silva',
-  pacienteCpf: '123.456.789-00',
   pacienteIdade: '62 anos',
   pacienteSexo: 'masculino',
   pacienteRegiao: 'São Paulo, SP',
@@ -104,7 +103,6 @@ export const CASO_MOCK_1: Caso = {
 export const CASO_MOCK_2: Caso = {
   id: 'caso-002',
   pacienteNome: 'Maria Lima',
-  pacienteCpf: '987.654.321-00',
   pacienteIdade: '34 anos',
   pacienteSexo: 'feminino',
   pacienteRegiao: 'Rio de Janeiro, RJ',
@@ -199,7 +197,6 @@ export const CASO_MOCK_2: Caso = {
 export const CASO_MOCK_3: Caso = {
   id: 'caso-003',
   pacienteNome: 'Beatriz Andrade',
-  pacienteCpf: '111.222.333-44',
   pacienteIdade: '24 anos',
   pacienteSexo: 'feminino',
   pacienteRegiao: 'Belo Horizonte, MG',
@@ -252,7 +249,6 @@ export const CASO_MOCK_3: Caso = {
 export const CASO_MOCK_4: Caso = {
   id: 'caso-004',
   pacienteNome: 'Carlos Mendes',
-  pacienteCpf: '222.333.444-55',
   pacienteIdade: '57 anos',
   pacienteSexo: 'masculino',
   pacienteRegiao: 'Curitiba, PR',
@@ -312,7 +308,6 @@ export const CASO_MOCK_4: Caso = {
 export const CASO_MOCK_5: Caso = {
   id: 'caso-005',
   pacienteNome: 'Daniela Rocha',
-  pacienteCpf: '333.444.555-66',
   pacienteIdade: '29 anos',
   pacienteSexo: 'feminino',
   pacienteRegiao: 'Salvador, BA',
@@ -363,7 +358,6 @@ export const CASO_MOCK_5: Caso = {
 export const CASO_MOCK_6: Caso = {
   id: 'caso-006',
   pacienteNome: 'Eduardo Pinto',
-  pacienteCpf: '444.555.666-77',
   pacienteIdade: '41 anos',
   pacienteSexo: 'masculino',
   pacienteRegiao: 'Recife, PE',
@@ -412,7 +406,6 @@ export const CASO_MOCK_6: Caso = {
 export const CASO_MOCK_7: Caso = {
   id: 'caso-007',
   pacienteNome: 'Fernanda Souza',
-  pacienteCpf: '555.666.777-88',
   pacienteIdade: '38 anos',
   pacienteSexo: 'feminino',
   pacienteRegiao: 'Porto Alegre, RS',
@@ -463,7 +456,6 @@ export const CASO_MOCK_7: Caso = {
 export const CASO_MOCK_8: Caso = {
   id: 'caso-008',
   pacienteNome: 'Gabriel Teixeira',
-  pacienteCpf: '666.777.888-99',
   pacienteIdade: '19 anos',
   pacienteSexo: 'masculino',
   pacienteRegiao: 'Fortaleza, CE',
