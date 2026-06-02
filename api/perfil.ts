@@ -65,22 +65,24 @@ async function atualizar(request: Request, medico: Medico): Promise<Response> {
 
   try {
     const rows = await sql`
-      UPDATE medicos SET
-        nome          = COALESCE(${body.nome ?? null}, nome),
-        crm           = ${body.crm},
-        uf            = ${body.uf ?? ''},
-        especialidade = ${body.especialidade},
-        nome_clinica  = ${body.nomeClinica ?? ''}
-      WHERE id = ${medico.id}
+      INSERT INTO medicos (id, nome, email, crm, uf, especialidade, nome_clinica, organizacao_id, is_admin)
+      VALUES (
+        ${medico.id}, ${body.nome ?? medico.nome}, ${medico.email},
+        ${body.crm}, ${body.uf ?? ''}, ${body.especialidade}, ${body.nomeClinica ?? ''},
+        ${'org-' + crypto.randomUUID()}, TRUE
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        nome          = COALESCE(EXCLUDED.nome, medicos.nome),
+        crm           = EXCLUDED.crm,
+        uf            = EXCLUDED.uf,
+        especialidade = EXCLUDED.especialidade,
+        nome_clinica  = EXCLUDED.nome_clinica
       RETURNING
         id, nome, email, crm, uf, especialidade,
         nome_clinica   AS "nomeClinica",
         is_admin       AS "isAdmin",
         organizacao_id AS "organizacaoId"
     `
-    if (rows.length === 0) {
-      return Response.json({ error: 'medico nao encontrado' }, { status: 404 })
-    }
     return Response.json(rows[0])
   } catch (error) {
     const message = error instanceof Error ? error.message : 'erro desconhecido'
