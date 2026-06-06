@@ -17,6 +17,7 @@
             nodejs_20
             pnpm
             git
+            uv
           ];
         };
       }
