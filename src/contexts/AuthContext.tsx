@@ -36,17 +36,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   })
 
   const login = useCallback(async (email: string, senha: string) => {
-    const { error } = await authClient.signIn.email({ email, password: senha })
-    if (error) throw new Error(error.message ?? 'Email ou senha incorretos.')
+    try {
+      const { error } = await authClient.signIn.email({ email, password: senha })
+      if (error) throw new Error(error.message ?? 'Email ou senha incorretos.')
+    } catch (err) {
+      if (err instanceof Error) throw err
+      throw new Error('Erro ao conectar com o servidor de autenticação.')
+    }
   }, [])
 
   const cadastrar = useCallback(async (input: CadastroInput) => {
-    const { error } = await authClient.signUp.email({
-      email: input.email,
-      password: input.senha,
-      name: input.nome,
-    })
-    if (error) throw new Error(error.message ?? 'Não foi possível cadastrar.')
+    try {
+      const { error } = await authClient.signUp.email({
+        email: input.email,
+        password: input.senha,
+        name: input.nome,
+      })
+      if (error) throw new Error(error.message ?? 'Não foi possível cadastrar.')
+    } catch (err) {
+      if (err instanceof Error) throw err
+      throw new Error('Erro ao conectar com o servidor de autenticação.')
+    }
   }, [])
 
   const atualizarUsuario = useCallback(

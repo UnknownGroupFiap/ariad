@@ -27,15 +27,10 @@ export default async function handler(request: Request): Promise<Response> {
 
 async function obter(medico: Medico): Promise<Response> {
   try {
+    const orgId = 'org-' + crypto.randomUUID()
     await sql`
       INSERT INTO medicos (id, nome, email, organizacao_id, is_admin)
-      VALUES (
-        ${medico.id},
-        ${medico.nome},
-        ${medico.email},
-        ${'org-' + crypto.randomUUID()},
-        TRUE
-      )
+      VALUES (${medico.id}, ${medico.nome}, ${medico.email}, ${orgId}, TRUE)
       ON CONFLICT (id) DO NOTHING
     `
     const rows = await sql`
@@ -64,12 +59,13 @@ async function atualizar(request: Request, medico: Medico): Promise<Response> {
   }
 
   try {
+    const orgId = 'org-' + crypto.randomUUID()
     const rows = await sql`
       INSERT INTO medicos (id, nome, email, crm, uf, especialidade, nome_clinica, organizacao_id, is_admin)
       VALUES (
         ${medico.id}, ${body.nome ?? medico.nome}, ${medico.email},
         ${body.crm}, ${body.uf ?? ''}, ${body.especialidade}, ${body.nomeClinica ?? ''},
-        ${'org-' + crypto.randomUUID()}, TRUE
+        ${orgId}, TRUE
       )
       ON CONFLICT (id) DO UPDATE SET
         nome          = COALESCE(EXCLUDED.nome, medicos.nome),

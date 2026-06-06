@@ -28,8 +28,8 @@ export default function PrivateLayout({ children }: PrivateLayoutProps) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     navigate(ROUTES.HOME)
   }
 

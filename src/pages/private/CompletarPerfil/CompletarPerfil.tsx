@@ -1,12 +1,13 @@
 import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { PublicLayout, Card, Input, Select, Button } from '@/components'
+import { Link, useNavigate } from 'react-router-dom'
+import { Card, Input, Select, Button } from '@/components'
 import { useAuth } from '@/contexts/AuthContext'
 import { UFS, ESPECIALIDADES, ROUTES } from '@/utils/constants'
 import { validateCRM } from '@/utils/validators'
+import logo from '@/assets/logo.svg'
 
 export default function CompletarPerfil() {
-  const { user, atualizarUsuario } = useAuth()
+  const { user, atualizarUsuario, logout } = useAuth()
   const navigate = useNavigate()
 
   const [form, setForm] = useState({
@@ -38,9 +39,29 @@ export default function CompletarPerfil() {
     }
   }
 
+  const handleLogout = async () => {
+    await logout()
+    navigate(ROUTES.HOME)
+  }
+
   return (
-    <PublicLayout>
-      <section className="py-20 px-4 flex justify-center">
+    <div className="min-h-screen flex flex-col bg-ariad-beige-light">
+      <header className="border-b border-ariad-green-water">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+          <Link to={ROUTES.HOME} className="flex items-center gap-2">
+            <img src={logo} alt="Ariad" className="w-8 h-8" />
+            <span className="text-lg font-semibold">Ariad</span>
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="text-sm px-3 py-1.5 rounded-md hover:bg-ariad-green-water-light transition-colors"
+          >
+            Sair
+          </button>
+        </div>
+      </header>
+
+      <main className="flex-1 flex items-center justify-center px-4 py-16">
         <div className="w-full max-w-lg">
           <h1 className="text-3xl mb-2 text-center">Complete seu perfil</h1>
           <p className="text-center mb-8">
@@ -87,7 +108,7 @@ export default function CompletarPerfil() {
             </form>
           </Card>
         </div>
-      </section>
-    </PublicLayout>
+      </main>
+    </div>
   )
 }

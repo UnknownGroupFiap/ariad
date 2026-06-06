@@ -42,7 +42,7 @@ export default function Cadastro() {
     setEnviando(true)
     try {
       await cadastrar(form)
-      navigate(ROUTES.DASHBOARD, { replace: true })
+      navigate(ROUTES.COMPLETAR_PERFIL, { replace: true })
     } catch (err) {
       setErroGeral(
         err instanceof Error ? err.message : 'Não foi possível cadastrar.',

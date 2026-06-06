@@ -12,7 +12,16 @@ export const authClient = createAuthClient(authUrl, {
 })
 
 export async function obterToken(): Promise<string | null> {
-  const session = await authClient.getSession()
-  const token = (session.data?.session as { token?: string } | undefined)?.token
-  return token ?? null
+  try {
+    const session = await Promise.race([
+      authClient.getSession(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('session timeout')), 5000),
+      ),
+    ])
+    const sessionObj = session.data?.session as Record<string, unknown> | undefined
+    return typeof sessionObj?.token === 'string' ? sessionObj.token : null
+  } catch {
+    return null
+  }
 }
