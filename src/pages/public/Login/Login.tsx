@@ -67,6 +67,19 @@ export default function Login() {
             </form>
           </Card>
 
+          <div className="mt-6 border border-gray-200 rounded-lg p-4 bg-gray-50">
+            <p className="text-xs text-gray-500 uppercase font-medium mb-2">Conta demo</p>
+            <button
+              type="button"
+              onClick={() => { setEmail('demo@ariad.med.br'); setSenha('Demo@2026') }}
+              className="w-full text-left text-sm text-gray-700 hover:bg-gray-100 rounded p-2 transition-colors"
+            >
+              <span className="font-mono text-xs block">demo@ariad.med.br</span>
+              <span className="font-mono text-xs block">Demo@2026</span>
+              <span className="text-xs text-gray-400 mt-1 block">12 casos clínicos populados</span>
+            </button>
+          </div>
+
           <p className="text-center text-sm mt-6">
             Ainda não tem conta?{' '}
             <Link

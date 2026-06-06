@@ -28,75 +28,50 @@ export const CASO_MOCK_1: Caso = {
     {
       id: 'hip-001',
       nome: 'Doença de Parkinson',
-      probabilidade: 78,
+      probabilidade: 83,
       evidencias: [
-        'Tremor de repouso característico',
-        'Bradicinesia confirmada ao exame',
-        'Rigidez muscular em roda denteada',
-        'Idade e progressão compatíveis',
+        'Tremor de repouso (freq: 55% em parkinsonismo hereditário)',
+        'Bradicinesia (freq: 55%)',
+        'Rigidez/espasticidade (freq: 55%)',
+        'Instabilidade postural (freq: 55%)',
       ],
       investigacoes: [
-        {
-          id: 'inv-001',
-          tipo: 'pergunta',
-          descricao: 'Investigar resposta a levodopa (teste terapêutico)',
-        },
-        {
-          id: 'inv-002',
-          tipo: 'exame',
-          descricao:
-            'Ressonância magnética de crânio para descartar causas secundárias',
-        },
-        {
-          id: 'inv-003',
-          tipo: 'exame',
-          descricao:
-            'DAT-Scan (cintilografia de transportador de dopamina) se disponível',
-        },
+        { id: 'inv-001', tipo: 'pergunta', descricao: 'Investigar resposta a levodopa (teste terapêutico)' },
+        { id: 'inv-002', tipo: 'exame', descricao: 'Ressonância magnética de crânio para descartar causas secundárias' },
+        { id: 'inv-003', tipo: 'exame', descricao: 'DAT-Scan (cintilografia de transportador de dopamina) se disponível' },
       ],
     },
     {
       id: 'hip-002',
-      nome: 'Parkinsonismo atípico',
-      probabilidade: 15,
+      nome: 'Paralisia supranuclear progressiva',
+      probabilidade: 10,
       evidencias: [
-        'Sintomas motores presentes',
-        'Necessário acompanhamento para descartar',
+        'Instabilidade postural (freq: 90%)',
+        'Bradicinesia (freq: 99%)',
+        'Necessário avaliar paralisia do olhar vertical',
       ],
       investigacoes: [
-        {
-          id: 'inv-004',
-          tipo: 'pergunta',
-          descricao:
-            'Avaliar sintomas não-motores: constipação, hiposmia, distúrbios do sono REM',
-        },
+        { id: 'inv-004', tipo: 'pergunta', descricao: 'Avaliar paralisia do olhar vertical e quedas precoces' },
+      ],
+    },
+    {
+      id: 'hip-003',
+      nome: 'Parkinsonismo atípico',
+      probabilidade: 7,
+      evidencias: [
+        'Sintomas motores presentes sem resposta a levodopa',
+        'Necessário acompanhamento longitudinal para diferenciar',
+      ],
+      investigacoes: [
+        { id: 'inv-005', tipo: 'pergunta', descricao: 'Avaliar sintomas não-motores: constipação, hiposmia, distúrbios do sono REM' },
       ],
     },
   ],
   investigacoes: [
-    {
-      id: 'inv-001',
-      tipo: 'pergunta',
-      descricao: 'Investigar resposta a levodopa (teste terapêutico)',
-    },
-    {
-      id: 'inv-002',
-      tipo: 'exame',
-      descricao:
-        'Ressonância magnética de crânio para descartar causas secundárias',
-    },
-    {
-      id: 'inv-003',
-      tipo: 'exame',
-      descricao:
-        'DAT-Scan (cintilografia de transportador de dopamina) se disponível',
-    },
-    {
-      id: 'inv-004',
-      tipo: 'pergunta',
-      descricao:
-        'Avaliar presença de sintomas não-motores: constipação, hiposmia, distúrbios do sono REM',
-    },
+    { id: 'inv-001', tipo: 'pergunta', descricao: 'Investigar resposta a levodopa (teste terapêutico)' },
+    { id: 'inv-002', tipo: 'exame', descricao: 'Ressonância magnética de crânio para descartar causas secundárias' },
+    { id: 'inv-003', tipo: 'exame', descricao: 'DAT-Scan (cintilografia de transportador de dopamina) se disponível' },
+    { id: 'inv-005', tipo: 'pergunta', descricao: 'Avaliar sintomas não-motores: constipação, hiposmia, distúrbios do sono REM' },
   ],
 }
 
@@ -126,71 +101,52 @@ export const CASO_MOCK_2: Caso = {
   ],
   hipoteses: [
     {
-      id: 'hip-003',
-      nome: 'Síndrome de Guillain-Barré',
-      probabilidade: 65,
+      id: 'hip-004',
+      nome: 'Síndrome de Guillain-Barré (AIDP)',
+      probabilidade: 72,
       evidencias: [
-        'Fraqueza ascendente bilateral',
-        'Arreflexia',
-        'Antecedente de infecção gastrointestinal',
-        'Parestesias distais',
+        'Fraqueza muscular ascendente bilateral',
+        'Arreflexia/hiporreflexia (freq: 55%)',
+        'Antecedente infeccioso gastrointestinal',
+        'Parestesias distais com disestesia',
       ],
       investigacoes: [
-        {
-          id: 'inv-005',
-          tipo: 'exame',
-          descricao:
-            'Punção lombar com análise de líquor (dissociação albumino-citológica)',
-        },
-        {
-          id: 'inv-007',
-          tipo: 'exame',
-          descricao:
-            'Gasometria arterial e espirometria (monitorar função respiratória)',
-        },
+        { id: 'inv-006', tipo: 'exame', descricao: 'Punção lombar com análise de líquor (dissociação albumino-citológica)' },
+        { id: 'inv-008', tipo: 'exame', descricao: 'Gasometria arterial e espirometria (monitorar função respiratória)' },
       ],
     },
     {
-      id: 'hip-004',
-      nome: 'Polirradiculoneuropatia desmielinizante',
-      probabilidade: 20,
+      id: 'hip-005',
+      nome: 'Polirradiculoneuropatia desmielinizante crônica (CIDP)',
+      probabilidade: 18,
       evidencias: [
         'Padrão de fraqueza compatível',
+        'Hiporreflexia generalizada (freq: 55%)',
         'Necessário eletroneuromiografia para confirmar',
       ],
       investigacoes: [
-        {
-          id: 'inv-006',
-          tipo: 'exame',
-          descricao: 'Eletroneuromiografia (padrão desmielinizante)',
-        },
+        { id: 'inv-007', tipo: 'exame', descricao: 'Eletroneuromiografia (padrão desmielinizante)' },
+      ],
+    },
+    {
+      id: 'hip-006',
+      nome: 'Miastenia gravis',
+      probabilidade: 10,
+      evidencias: [
+        'Fraqueza muscular (freq: 90%)',
+        'Dispneia (freq: 55%)',
+        'Necessário descartar junção neuromuscular',
+      ],
+      investigacoes: [
+        { id: 'inv-031', tipo: 'exame', descricao: 'Anticorpos anti-receptor de acetilcolina' },
       ],
     },
   ],
   investigacoes: [
-    {
-      id: 'inv-005',
-      tipo: 'exame',
-      descricao:
-        'Punção lombar com análise de líquor (dissociação albumino-citológica)',
-    },
-    {
-      id: 'inv-006',
-      tipo: 'exame',
-      descricao: 'Eletroneuromiografia (padrão desmielinizante)',
-    },
-    {
-      id: 'inv-007',
-      tipo: 'exame',
-      descricao:
-        'Gasometria arterial e espirometria (monitorar função respiratória)',
-    },
-    {
-      id: 'inv-008',
-      tipo: 'pergunta',
-      descricao:
-        'Avaliar progressão da fraqueza e capacidade vital forçada diariamente',
-    },
+    { id: 'inv-006', tipo: 'exame', descricao: 'Punção lombar com análise de líquor (dissociação albumino-citológica)' },
+    { id: 'inv-007', tipo: 'exame', descricao: 'Eletroneuromiografia (padrão desmielinizante)' },
+    { id: 'inv-008', tipo: 'exame', descricao: 'Gasometria arterial e espirometria (monitorar função respiratória)' },
+    { id: 'inv-009', tipo: 'pergunta', descricao: 'Avaliar progressão da fraqueza e capacidade vital forçada diariamente' },
   ],
 }
 
@@ -221,28 +177,43 @@ export const CASO_MOCK_3: Caso = {
   ],
   hipoteses: [
     {
-      id: 'hip-005',
+      id: 'hip-007',
       nome: 'Doença de Wilson',
-      probabilidade: 84,
+      probabilidade: 91,
       evidencias: [
-        'Anel de Kayser-Fleischer presente',
-        'Ceruloplasmina sérica reduzida',
-        'Sintomas neuropsiquiátricos com hepatopatia',
-        'Idade de início compatível',
+        'Anel de Kayser-Fleischer (freq: 90%)',
+        'Transaminases elevadas (freq: 90%)',
+        'Disartria (freq: 90%)',
+        'Icterícia (freq: 90%)',
+        'Alteração de personalidade (freq: 55%)',
+      ],
+    },
+    {
+      id: 'hip-008',
+      nome: 'Doença de Niemann-Pick tipo C',
+      probabilidade: 6,
+      evidencias: [
+        'Icterícia (freq: 90%)',
+        'Alteração comportamental (freq: 90%)',
+        'Tremor (freq: 17%)',
+      ],
+    },
+    {
+      id: 'hip-009',
+      nome: 'Hepatite autoimune',
+      probabilidade: 3,
+      evidencias: [
+        'Transaminases elevadas',
+        'Icterícia',
+        'Necessário descartar causa autoimune',
       ],
     },
   ],
   investigacoes: [
-    {
-      id: 'inv-009',
-      tipo: 'exame',
-      descricao: 'Cobre urinário de 24h e ceruloplasmina sérica',
-    },
-    {
-      id: 'inv-010',
-      tipo: 'exame',
-      descricao: 'Ressonância magnética de crânio (gânglios da base)',
-    },
+    { id: 'inv-010', tipo: 'exame', descricao: 'Ceruloplasmina sérica (esperado < 20 mg/dL)' },
+    { id: 'inv-011', tipo: 'exame', descricao: 'Cobre urinário de 24h (esperado > 100 µg/dia)' },
+    { id: 'inv-012', tipo: 'exame', descricao: 'Teste genético do gene ATP7B' },
+    { id: 'inv-013', tipo: 'exame', descricao: 'Teste de filipina ou oxysterois plasmáticos para Niemann-Pick C' },
   ],
 }
 
@@ -272,36 +243,45 @@ export const CASO_MOCK_4: Caso = {
   ],
   hipoteses: [
     {
-      id: 'hip-006',
+      id: 'hip-010',
       nome: 'Esclerose Lateral Amiotrófica',
-      probabilidade: 61,
+      probabilidade: 59,
       evidencias: [
-        'Sinais de 1º e 2º neurônio motor concomitantes',
-        'Fraqueza progressiva sem alteração sensitiva',
-        'Fasciculações e atrofia',
+        'Fraqueza muscular generalizada (freq: 90%)',
+        'Atrofia muscular esquelética (freq: 55%)',
+        'Fasciculações (freq: 55%)',
+        'Hiper-reflexia (freq: 55%)',
+        'Câimbras/espasmos musculares (freq: 55%)',
       ],
     },
     {
-      id: 'hip-007',
+      id: 'hip-011',
+      nome: 'Doença de Tay-Sachs (forma tardia)',
+      probabilidade: 22,
+      evidencias: [
+        'Fraqueza muscular (freq: 90%)',
+        'Atrofia muscular (freq: 90%)',
+        'Hiper-reflexia (freq: 55%)',
+        'Câimbras (freq: 55%)',
+      ],
+    },
+    {
+      id: 'hip-012',
       nome: 'Neuropatia motora multifocal',
-      probabilidade: 18,
+      probabilidade: 19,
       evidencias: [
         'Fraqueza assimétrica',
-        'Necessário eletroneuromiografia para diferenciar',
+        'Fasciculações',
+        'Atrofia muscular focal',
+        'Sem déficit sensitivo',
       ],
     },
   ],
   investigacoes: [
-    {
-      id: 'inv-011',
-      tipo: 'exame',
-      descricao: 'Eletroneuromiografia de quatro membros',
-    },
-    {
-      id: 'inv-012',
-      tipo: 'pergunta',
-      descricao: 'Avaliar sintomas bulbares (disfagia, disartria)',
-    },
+    { id: 'inv-015', tipo: 'exame', descricao: 'Eletroneuromiografia de quatro membros' },
+    { id: 'inv-016', tipo: 'exame', descricao: 'Ressonância magnética cervical e torácica' },
+    { id: 'inv-017', tipo: 'pergunta', descricao: 'Avaliar sintomas bulbares: disfagia, disartria, sialorreia' },
+    { id: 'inv-019', tipo: 'exame', descricao: 'Anticorpos anti-GM1 (IgM) para neuropatia motora multifocal' },
   ],
 }
 
@@ -331,27 +311,42 @@ export const CASO_MOCK_5: Caso = {
   ],
   hipoteses: [
     {
-      id: 'hip-008',
-      nome: 'Síndrome de Behçet',
-      probabilidade: 57,
+      id: 'hip-013',
+      nome: 'Doença de Behçet',
+      probabilidade: 88,
       evidencias: [
-        'Úlceras orais e genitais recorrentes',
-        'Acometimento ocular (uveíte)',
+        'Estomatite aftosa recorrente (freq: 90%)',
+        'Úlceras genitais (freq: 55%)',
+        'Uveíte não-granulomatosa (freq: 55%)',
+        'Pápulas/lesões cutâneas (freq: 90%)',
+      ],
+    },
+    {
+      id: 'hip-014',
+      nome: 'Lúpus eritematoso sistêmico',
+      probabilidade: 8,
+      evidencias: [
+        'Úlceras orais (freq: 17%)',
+        'Lesões cutâneas (freq: 55%)',
+        'Necessário descartar colagenose',
+      ],
+    },
+    {
+      id: 'hip-015',
+      nome: 'Doença inflamatória intestinal (Crohn)',
+      probabilidade: 4,
+      evidencias: [
+        'Aftas orais recorrentes',
         'Lesões cutâneas associadas',
+        'Uveíte como manifestação extra-intestinal',
       ],
     },
   ],
   investigacoes: [
-    {
-      id: 'inv-013',
-      tipo: 'exame',
-      descricao: 'Teste de patergia e avaliação oftalmológica',
-    },
-    {
-      id: 'inv-014',
-      tipo: 'exame',
-      descricao: 'HLA-B51 e provas inflamatórias',
-    },
+    { id: 'inv-021', tipo: 'exame', descricao: 'Teste de patergia' },
+    { id: 'inv-022', tipo: 'exame', descricao: 'HLA-B51' },
+    { id: 'inv-023', tipo: 'exame', descricao: 'Avaliação oftalmológica completa com biomicroscopia' },
+    { id: 'inv-024', tipo: 'exame', descricao: 'FAN, anti-DNA e complemento sérico para descartar LES' },
   ],
 }
 
@@ -382,24 +377,42 @@ export const CASO_MOCK_6: Caso = {
   ],
   hipoteses: [
     {
-      id: 'hip-009',
+      id: 'hip-016',
       nome: 'Doença de Fabry',
-      probabilidade: 72,
+      probabilidade: 76,
       evidencias: [
-        'Acroparestesias desde a juventude',
-        'Angioqueratomas característicos',
-        'Hipertrofia ventricular esquerda',
-        'História familiar ligada ao X',
+        'Angioqueratomas (freq: 90%)',
+        'Hipohidrose (freq: 90%)',
+        'Acroparestesias/dor neuropática',
+        'Hipertrofia ventricular esquerda (freq: 17%)',
+      ],
+    },
+    {
+      id: 'hip-017',
+      nome: 'Hanseníase (Lepra)',
+      probabilidade: 15,
+      evidencias: [
+        'Parestesias (freq: 55%)',
+        'Hipohidrose (freq: 55%)',
+        'Alteração de sensibilidade térmica (freq: 55%)',
+      ],
+    },
+    {
+      id: 'hip-018',
+      nome: 'Amiloidose ATTR hereditária',
+      probabilidade: 9,
+      evidencias: [
+        'Hipertrofia ventricular esquerda (freq: 55%)',
+        'Neuropatia periférica',
+        'Necessário descartar depósito amiloide',
       ],
     },
   ],
   investigacoes: [
-    {
-      id: 'inv-015',
-      tipo: 'exame',
-      descricao: 'Dosagem da enzima alfa-galactosidase A',
-    },
-    { id: 'inv-016', tipo: 'exame', descricao: 'Teste genético do gene GLA' },
+    { id: 'inv-026', tipo: 'exame', descricao: 'Dosagem da enzima alfa-galactosidase A (leucócitos)' },
+    { id: 'inv-027', tipo: 'exame', descricao: 'Teste genético do gene GLA' },
+    { id: 'inv-028', tipo: 'exame', descricao: 'Lyso-Gb3 plasmático (biomarcador)' },
+    { id: 'inv-029', tipo: 'exame', descricao: 'Baciloscopia de linfa para descartar hanseníase' },
   ],
 }
 
@@ -429,27 +442,44 @@ export const CASO_MOCK_7: Caso = {
   ],
   hipoteses: [
     {
-      id: 'hip-010',
+      id: 'hip-019',
       nome: 'Miastenia Gravis',
-      probabilidade: 66,
+      probabilidade: 85,
       evidencias: [
-        'Fraqueza muscular flutuante e fatigável',
-        'Ptose e diplopia',
-        'Piora vespertina com melhora ao repouso',
+        'Fraqueza muscular fatigável (freq: 55%)',
+        'Ptose palpebral (freq: 55%)',
+        'Diplopia (freq: 55%)',
+        'Fraqueza que piora ao esforço e melhora ao repouso',
+        'Fadiga (freq: 55%)',
+      ],
+    },
+    {
+      id: 'hip-020',
+      nome: 'Botulismo',
+      probabilidade: 9,
+      evidencias: [
+        'Ptose (freq: 90%)',
+        'Diplopia (freq: 90%)',
+        'Fraqueza muscular (freq: 90%)',
+        'Início agudo — necessário descartar',
+      ],
+    },
+    {
+      id: 'hip-021',
+      nome: 'Síndrome miastênico congênito',
+      probabilidade: 6,
+      evidencias: [
+        'Ptose e fraqueza flutuante',
+        'Sem anticorpos anti-AChR',
+        'Considerar se início juvenil',
       ],
     },
   ],
   investigacoes: [
-    {
-      id: 'inv-017',
-      tipo: 'exame',
-      descricao: 'Anticorpos anti-receptor de acetilcolina',
-    },
-    {
-      id: 'inv-018',
-      tipo: 'exame',
-      descricao: 'Eletroneuromiografia com estimulação repetitiva',
-    },
+    { id: 'inv-033', tipo: 'exame', descricao: 'Anticorpos anti-receptor de acetilcolina (AChR)' },
+    { id: 'inv-034', tipo: 'exame', descricao: 'Eletroneuromiografia com estimulação repetitiva' },
+    { id: 'inv-035', tipo: 'exame', descricao: 'TC de tórax (pesquisa de timoma)' },
+    { id: 'inv-037', tipo: 'exame', descricao: 'Anticorpos anti-MuSK e anti-LRP4 se AChR negativo' },
   ],
 }
 
@@ -479,27 +509,45 @@ export const CASO_MOCK_8: Caso = {
   ],
   hipoteses: [
     {
-      id: 'hip-011',
+      id: 'hip-022',
       nome: 'Ataxia de Friedreich',
-      probabilidade: 70,
+      probabilidade: 62,
       evidencias: [
-        'Ataxia progressiva de início juvenil',
-        'Arreflexia com sinal de Babinski',
-        'Escoliose e consanguinidade parental',
+        'Ataxia de marcha progressiva (freq: obrigatório 100%)',
+        'Disartria (freq: 90%)',
+        'Escoliose (freq: 55%)',
+        'Arreflexia de membros inferiores (freq: 55%)',
+        'Consanguinidade parental (herança AR)',
+      ],
+    },
+    {
+      id: 'hip-023',
+      nome: 'Ataxia com deficiência de vitamina E',
+      probabilidade: 22,
+      evidencias: [
+        'Ataxia (freq: 90%)',
+        'Arreflexia (freq: 90%)',
+        'Escoliose (freq: 55%)',
+        'Disartria (freq: 55%)',
+        'Fenótipo muito semelhante a Friedreich',
+      ],
+    },
+    {
+      id: 'hip-024',
+      nome: 'Ataxia espinocerebelosa (SCA)',
+      probabilidade: 16,
+      evidencias: [
+        'Ataxia de marcha (freq: 55%)',
+        'Disartria (freq: 55%)',
+        'Necessário descartar formas autossômicas dominantes',
       ],
     },
   ],
   investigacoes: [
-    {
-      id: 'inv-019',
-      tipo: 'exame',
-      descricao: 'Teste genético para expansão GAA no gene FXN',
-    },
-    {
-      id: 'inv-020',
-      tipo: 'exame',
-      descricao: 'Ecocardiograma (miocardiopatia hipertrófica)',
-    },
+    { id: 'inv-038', tipo: 'exame', descricao: 'Teste genético para expansão GAA no gene FXN' },
+    { id: 'inv-039', tipo: 'exame', descricao: 'Ecocardiograma (miocardiopatia hipertrófica)' },
+    { id: 'inv-041', tipo: 'exame', descricao: 'Dosagem de vitamina E sérica' },
+    { id: 'inv-043', tipo: 'exame', descricao: 'Painel genético para SCAs' },
   ],
 }
 
